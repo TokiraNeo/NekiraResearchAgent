@@ -8,7 +8,6 @@ export type PromptId = "plan" | "search" | "read" | "reflect" | "synthesize" | "
 
 export interface PromptDefinition {
   id: PromptId;
-  version: string;
   variables: string[];        // 模板需要的变量列表
   outputSchema: object;       // 期望的输出 JSON Schema
   template: string;           // Handlebars 模板

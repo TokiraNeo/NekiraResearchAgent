@@ -11,6 +11,8 @@ export default defineConfig(async () => ({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
       "@prompts": fileURLToPath(new URL("./src/prompts", import.meta.url)),
+      "@graph": fileURLToPath(new URL("./src/graph", import.meta.url)),
+      "@agent": fileURLToPath(new URL("./src/agent", import.meta.url))
     },
   },
 

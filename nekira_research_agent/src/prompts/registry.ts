@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import Handlebars from "handlebars/runtime";
-
+import Handlebars from "handlebars";
 import { PromptDefinition, PromptId } from "@/prompts/promptDef";
 
 class PromptRegistry {
@@ -42,8 +41,10 @@ class PromptRegistry {
 
     // 注入公共变量
     const enrichData = {
+      agentName: "NekiraResearchAgent",
+      language: "zh-CN",
+      tone: "专业、简洁、客观",
       ...data,
-      _partials: Object.fromEntries(this.partials.entries()),
     }
 
     return delegate(enrichData).trim();

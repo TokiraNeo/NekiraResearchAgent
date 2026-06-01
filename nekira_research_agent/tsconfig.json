@@ -4,7 +4,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/prompts/*": ["./src/prompts/*"]
+      "@/prompts/*": ["./src/prompts/*"],
+      "@/graph/*": ["src/graph/*"],
+      "@/agent/*": ["src/agent/*"]
     },
 
     "target": "ES2020",

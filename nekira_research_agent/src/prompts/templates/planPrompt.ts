@@ -8,8 +8,7 @@ import { PromptDefinition } from "@/prompts/promptDef";
 
 export const planPromptDef: PromptDefinition = {
   id: "plan",
-  version: "1.0.0",
-  variables: ["topic", "iteration", "existingFindings", "gapAnalysis", "count"],
+  variables: ["topic", "count", "isFirstRound", "existingFindings", "gapAnalysis"],
   outputSchema: {
     type: "array",
     items: { type: "string" },
