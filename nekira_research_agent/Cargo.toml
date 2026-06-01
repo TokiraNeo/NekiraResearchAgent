@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "src-tauri",
+    "crates/core",
+]
+
+[workspace.package]
+edition = "2024"
+license = "GPL-3.0-or-later"
+license-file = "../LICENSE"
+readme = "../README.md"
+authors = ["TokiraNeo <TokiraNeo@outlook.com>"]
+description = "A Native Research Agent."
+repository = "https://github.com/TokiraNeo/NekiraResearchAgent"
