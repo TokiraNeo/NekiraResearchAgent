@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "env:init": "node src/scripts/generateEnv.ts",
+    "env:reset": "node src/scripts/generateEnv.ts --force"
   },
   "dependencies": {
     "@langchain/core": "^1.1.48",
