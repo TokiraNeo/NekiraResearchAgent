@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
- // 该脚本从 .env.example 复制生成 .env 文件
+// 该脚本从 .env.example 复制生成 .env 文件
 
 import { existsSync, copyFileSync } from "node:fs";
 import { resolve } from "node:path";
