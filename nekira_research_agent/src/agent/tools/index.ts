@@ -4,8 +4,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-const ToolsByName = {
+ import {add, multiply} from "@/agent/tools/utilities/exampleTool";
 
-};
-
-export const Tools = Object.values(ToolsByName);
+// 默认的示例工具集合
+const exampleToolsMap = {
+  [add.name]: add,
+  [multiply.name]: multiply,
+}
+export const exampleTools = Object.values(exampleToolsMap);
