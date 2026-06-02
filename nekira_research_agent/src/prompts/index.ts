@@ -4,15 +4,23 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import {promptRegistry} from "@/prompts/registry";
-
-import { planPromptDef } from "@/prompts/templates/planPrompt";
+import {PromptRegistry} from "@/prompts/registry";
+import { AnyPromptMap, PromptId } from "@/prompts/promptDef";
 import { personaPartialDef } from "@/prompts/partials/personaPartial";
+import { planPromptDef } from "@/prompts/templates/planPrompt";
+
+const promptMap: AnyPromptMap = {
+  "plan": planPromptDef,
+};
+
+const promptRegistry = new PromptRegistry(promptMap);
 
 export function initPrompts(): void {
   // 注册可复用字段
   promptRegistry.registerPartial("persona", personaPartialDef);
 
-  // 注册Prompt
-  promptRegistry.registerPrompt(planPromptDef);
+}
+
+export function getPrompt(id: PromptId) {
+  return promptRegistry.getPrompt(id);
 }

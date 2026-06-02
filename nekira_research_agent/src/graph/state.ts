@@ -6,45 +6,60 @@
 
 import { Annotation } from "@langchain/langgraph";
 
+const overwrite = <T>(initial: T) =>
+  Annotation<T>({
+    reducer: (_left, right) => right,
+    default: () => initial,
+  });
+
+const appendArray = <T>() =>
+  Annotation<T[]>({
+    reducer: (left, right) => left.concat(right),
+    default: () => [],
+  });
+
+type SourceNote = {
+  url: string;
+  title: string;
+  summary: string;
+  keyPoints: string[];
+};
+
+type Finding = {
+  claim: string;
+  sourceUrls: string[];
+  confidence: "high" | "medium" | "low";
+};
+
+type Gap = {
+  question: string;
+  priority: "high" | "medium" | "low";
+};
+
 // 用于存储整个调研过程中的状态信息，供各个Agent节点访问和更新
 export const ResearchState = Annotation.Root({
-  // ---- 输入
-  topic: Annotation<string>,           // 调研主题
-  maxIterations: Annotation<number>,   // 最大迭代次数
+  // ---- 基础信息
+  topic: overwrite(""),
+  round: overwrite(0),
+  maxRounds: overwrite(3),
 
-  // ---- 搜索规划
-  searchQueries: Annotation<string[]>,   // 本轮的搜索查询列表
+  // ---- 搜索计划
+  queries: overwrite<string[]>([]),           // 计划的搜索查询列表
+  candidateUrls: overwrite<string[]>([]),     // 搜索工具输出的候选URL列表
 
-  // ---- 搜索结果
-  searchResults: Annotation<{
-    query: string;
-    results: Array<{
-      title: string,
-      url: string,
-      snippet: string,
-    }>;
-    }[]>,                               // 每个搜索查询对应的结果
+  // ---- 信息收集
+  sourceNotes: appendArray<SourceNote>(),
 
-  // ---- 阅读内容
-  readings: Annotation<{
-    url: string;
-    title: string;
-    content: string;      // 清洗后的正文
-    summary: string;      // LLM 对单篇文章的摘要
-    }[]>,
+  // ---- 分析与总结
+  findings: overwrite<Finding[]>([]),
 
-  // ---- 关键发现
-  findings: Annotation<{
-    point: string;        // 发现点
-    sourceUrls: string[]; // 来源
-    confidence: "high" | "medium" | "low";
-    }[]>,
-
-  // ---- Agent控制
-  iteration: Annotation<number>,       // 当前迭代轮次
-  gapAnalysis: Annotation<string>,     // reflect 节点产出的信息缺口分析
-  isSufficient: Annotation<boolean>,   // 信息是否充足
+  // ---- 反思
+  gaps: overwrite<Gap[]>([]),
 
   // ---- 输出
-  finalReport: Annotation<string>,     // 最终 Markdown 报告
+  shouldContinue: overwrite(true),    // 是否继续下一轮调研，false则结束进入报告生成阶段
+  finalReport: overwrite(""),
 });
+
+export type ResearchGraphState = typeof ResearchState.State;
+export type ResearchGraphUpdate = typeof ResearchState.Update;
