@@ -28,7 +28,7 @@ export class PromptRegistry<T extends AnyPromptMap> {
   getPrompt<K extends keyof T>(id: K): T[K] {
     const prompt = this.prompts[id];
     if (!prompt) {
-      throw new Error(`Prompt with id "${id}" not found in registry.`);
+      throw new Error(`Prompt with id "${String(id)}" not found in registry.`);
     }
     return prompt;
   }
@@ -39,7 +39,7 @@ export class PromptRegistry<T extends AnyPromptMap> {
 
     const delegate = this.compiled.get(id);
     if (!delegate) {
-      throw new Error(`Compiled template for prompt "${id}" not found.`);
+      throw new Error(`Compiled template for prompt "${String(id)}" not found.`);
     }
 
     return delegate(parsed).trim();

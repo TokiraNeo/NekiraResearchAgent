@@ -6,7 +6,6 @@
 
 import { add, multiply } from "@/agent/tools/utilities/exampleTool";
 
-
 export const toolsRegistry = {
   [add.name]: add,
   [multiply.name]: multiply,
@@ -16,15 +15,32 @@ type ToolName = keyof typeof toolsRegistry;
 
 const toolsSet = {
   "none": [] as ToolName[],
+  "default": ["add", "multiply"],
   "search": [] as ToolName[], // 搜索工具集合（示例中暂时为空）
   "read": [] as ToolName[],   // 阅读工具集合（示例中暂时为空）
 };
 
 export type ToolSetId = keyof typeof toolsSet;
 
-// 默认的示例工具集合
-const exampleToolsMap = {
-  [add.name]: add,
-  [multiply.name]: multiply,
+export function resolveTools(id: ToolSetId) {
+  if (!id || id === "none") {
+    return [];
+  }
+
+  const toolNames = toolsSet[id];
+  if (!toolNames) {
+    throw new Error(`ToolSetId "${id}" is not defined in toolsSet.`);
+  }
+
+  const tools = toolNames.map((
+    (name) => {
+      const tool = toolsRegistry[name];
+      if (!tool) {
+        throw new Error(`Tool "${name}" is not defined in toolsRegistry.`);
+      }
+      return tool;
+    }
+  ));
+
+  return tools;
 }
-export const exampleTools = Object.values(exampleToolsMap);
