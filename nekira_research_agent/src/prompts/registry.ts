@@ -5,9 +5,9 @@
  */
 
 import Handlebars from "handlebars";
-import { AnyPromptMap, PromptInput } from "@/prompts/promptDef";
+import { AnyPromptDefinition, PromptInput } from "@/prompts/promptDef";
 
-export class PromptRegistry<T extends AnyPromptMap> {
+export class PromptRegistry<T extends Record<string, AnyPromptDefinition>> {
   private prompts: T;
   private compiled = new Map<keyof T, HandlebarsTemplateDelegate>();
   private partials: Map<string, string> = new Map();
@@ -19,7 +19,6 @@ export class PromptRegistry<T extends AnyPromptMap> {
     }
   }
 
-  // 注册可复用字段
   registerPartial(name: string, template: string): void {
     this.partials.set(name, template);
     Handlebars.registerPartial(name, template);
@@ -33,7 +32,7 @@ export class PromptRegistry<T extends AnyPromptMap> {
     return prompt;
   }
 
-  renderPrompt<K extends keyof T>(id: K, input: PromptInput<T[K]>) {
+  renderPrompt<K extends keyof T>(id: K, input: PromptInput<T[K]>): string {
     const prompt = this.getPrompt(id);
     const parsed = prompt.inputSchema.parse(input);
 

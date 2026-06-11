@@ -5,8 +5,8 @@
  */
 
 import * as z from "zod";
-import { ModelProfileLevel } from "@/agent/model/model";
-import { ToolSetId } from "@/agent/tools";
+import type { ModelProfileLevel } from "@/agent/model/model";
+import type { ToolSetId } from "@/agent/tools";
 
 export type PromptId = "plan" | "search" | "read" | "reflect" | "synthesize" | "generateReport";
 
@@ -30,7 +30,7 @@ export interface PromptDefinition<Input, Output> {
 
 export type AnyPromptDefinition = PromptDefinition<any, any>;
 
-export type AnyPromptMap = Record<string, AnyPromptDefinition>;
+export type AnyPromptMap = Partial<Record<PromptId, AnyPromptDefinition>>;
 
 export type PromptInput<T extends AnyPromptDefinition> = z.infer<T["inputSchema"]>;
 export type PromptOutput<T extends AnyPromptDefinition> = z.infer<T["outputSchema"]>;

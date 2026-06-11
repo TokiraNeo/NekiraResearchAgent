@@ -7,7 +7,6 @@
 import { ResearchGraphState, ResearchGraphUpdate } from "@/graph/state";
 
 
-async function planNode(state: ResearchGraphState): Promise<ResearchGraphUpdate> {
-
+export async function planNode(_state: ResearchGraphState): Promise<ResearchGraphUpdate> {
   return {};
 }

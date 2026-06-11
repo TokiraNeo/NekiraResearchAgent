@@ -5,28 +5,27 @@
  */
 
 import { PromptRegistry } from "@/prompts/registry";
-import { runStructuredPrompt, runToolEnablePrompt } from "@/prompts/executor";
+import { runStructuredPrompt, runToolEnabledPrompt } from "@/prompts/executor";
 import { AnyPromptMap, PromptInput, PromptOutput } from "@/prompts/promptDef";
 import { personaPartialDef } from "@/prompts/partials/personaPartial";
 import { planPromptDef } from "@/prompts/templates/planPrompt";
 
+const promptMap = {
+  plan: planPromptDef,
+} as const satisfies AnyPromptMap;
 
-const promptMap: AnyPromptMap = {
-  "plan": planPromptDef,
-};
+export const promptRegistry = new PromptRegistry(promptMap);
 
-const promptRegistry = new PromptRegistry(promptMap);
+export type AppPromptMap = typeof promptMap;
 
 export function initPrompts(): void {
-  // 注册可复用字段
   promptRegistry.registerPartial("persona", personaPartialDef);
-
 }
 
-export async function executePrompt<
-  T extends AnyPromptMap,
-  K extends keyof AnyPromptMap
-  >(id: K, input: PromptInput<T[K]>): Promise<PromptOutput<T[K]>> {
+export async function executePrompt<K extends keyof AppPromptMap>(
+  id: K,
+  input: PromptInput<AppPromptMap[K]>,
+): Promise<PromptOutput<AppPromptMap[K]>> {
   const def = promptRegistry.getPrompt(id);
   const prompt = promptRegistry.renderPrompt(id, input);
   const executionMode = def.executionMode ?? "structured";
@@ -34,8 +33,8 @@ export async function executePrompt<
   // 根据 executionMode 选择执行方式
 
   if (executionMode === "structured") {
-    return await runStructuredPrompt(def, prompt);
+    return runStructuredPrompt(def, prompt);
   }
 
-  return await runToolEnablePrompt(def, prompt);
+  return runToolEnabledPrompt(def, prompt);
 }

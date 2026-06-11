@@ -10,7 +10,7 @@ import { PromptDefinition } from "@/prompts/promptDef";
 // plan阶段的输入结构定义
 const planInputSchema = z.object({
   topic: z.string().min(1),
-  round: z.number().int().positive(),
+  round: z.number().int().nonnegative(),
   maxRounds: z.number().int().positive(),
   findings: z.array(z.object({
       claim: z.string(),
