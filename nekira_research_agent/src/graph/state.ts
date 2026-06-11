@@ -57,7 +57,7 @@ export const ResearchState = Annotation.Root({
   gaps: overwrite<Gap[]>([]),
 
   // ---- 输出
-  shouldContinue: overwrite(true),    // 是否继续下一轮调研，false则结束进入报告生成阶段
+  shouldReplan: overwrite(true),    // 是否继续下一轮调研，false则结束进入报告生成阶段
   finalReport: overwrite(""),
 });
 

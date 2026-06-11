@@ -8,7 +8,7 @@ import * as z from "zod";
 import type { ModelProfileLevel } from "@/agent/model/model";
 import type { ToolSetId } from "@/agent/tools";
 
-export type PromptId = "plan" | "search" | "read" | "reflect" | "synthesize" | "generateReport";
+export type PromptId = "plan" | "search" | "read" | "reflect" | "synthesize" | "report";
 
 export type PromptExecutionMode =
   | "structured"     // 无 tool，直接要求结构化输出
