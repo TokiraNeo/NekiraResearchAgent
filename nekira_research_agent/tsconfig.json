@@ -5,8 +5,11 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/prompts/*": ["./src/prompts/*"],
-      "@/graph/*": ["src/graph/*"],
-      "@/agent/*": ["src/agent/*"]
+      "@/graph/*": ["./src/graph/*"],
+      "@/agent/*": ["./src/agent/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/pages/*": ["./src/app/pages/*"],
+      "@/components/*": ["./src/app/components/*"],
     },
 
     "target": "ES2020",

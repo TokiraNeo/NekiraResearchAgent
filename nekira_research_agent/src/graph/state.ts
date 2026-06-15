@@ -40,7 +40,7 @@ type Gap = {
 export const ResearchState = Annotation.Root({
   // ---- 基础信息
   topic: overwrite(""),
-  round: overwrite(0),
+  round: overwrite(1),
   maxRounds: overwrite(3),
 
   // ---- 搜索计划

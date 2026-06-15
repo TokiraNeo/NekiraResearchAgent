@@ -19,9 +19,13 @@ export async function reflectNode(state: ResearchGraphState): Promise<ResearchGr
     }
   );
 
+  const nextRound = state.round + 1;
+  const shouldReplan = response.shouldReplan && (nextRound <= state.maxRounds);
+
   return {
     findings: response.findings,
     gaps: response.gaps,
-    shouldReplan: response.shouldReplan
+    shouldReplan: shouldReplan,
+    round: shouldReplan ? nextRound : state.round
   };
 }

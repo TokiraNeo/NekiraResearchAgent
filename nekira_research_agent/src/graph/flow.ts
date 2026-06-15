@@ -28,4 +28,9 @@ const graph = new StateGraph(ResearchState)
     [nodeIds.plan]: nodeIds.plan,
     [nodeIds.report]: nodeIds.report
   })
-  .addEdge(nodeIds.report, END);
+  .addEdge(nodeIds.report, END)
+  .compile();
+
+export async function invokeFlow(topic: string) {
+  return graph.invoke({ topic: topic });
+}
