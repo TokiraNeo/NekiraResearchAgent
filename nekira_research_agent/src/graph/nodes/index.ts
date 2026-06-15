@@ -13,9 +13,9 @@ import { readNode } from "@/graph/nodes/readNode"
 export { planNode, reportNode, reflectNode, searchNode, readNode }
 
 export const nodeIds = {
-  plan: "planNode",
-  search: "searchNode",
-  read: "readNode",
-  reflect: "reflectNode",
-  report: "reportNode",
+  plan: "plan",
+  search: "search",
+  read: "read",
+  reflect: "reflect",
+  report: "report",
 } as const;

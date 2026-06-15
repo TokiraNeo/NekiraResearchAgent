@@ -14,7 +14,7 @@ const planInputSchema = z.object({
   maxRounds: z.number().int().positive(),
   findings: z.array(z.object({
       claim: z.string(),
-      sourceUrls: z.array(z.string()),
+      sourceUrls: z.array(z.url()),
       confidence: z.enum(["high", "medium", "low"]),
     })),
   gaps: z.array(z.object({

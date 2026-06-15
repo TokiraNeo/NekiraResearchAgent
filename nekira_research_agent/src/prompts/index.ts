@@ -9,9 +9,13 @@ import { runStructuredPrompt, runToolEnabledPrompt } from "@/prompts/executor";
 import { AnyPromptMap, PromptInput, PromptOutput } from "@/prompts/promptDef";
 import { personaPartialDef } from "@/prompts/partials/personaPartial";
 import { planPromptDef } from "@/prompts/templates/planPrompt";
+import { reflectPromptDef } from "@/prompts/templates/reflectPrompt";
+import { reportPromptDef } from "@/prompts/templates/reportPrompt";
 
 const promptMap = {
   plan: planPromptDef,
+  reflect: reflectPromptDef,
+  report: reportPromptDef,
 } as const satisfies AnyPromptMap;
 
 export const promptRegistry = new PromptRegistry(promptMap);
