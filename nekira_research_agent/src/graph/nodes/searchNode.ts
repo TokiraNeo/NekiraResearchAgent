@@ -5,7 +5,17 @@
  */
 
 import { ResearchGraphState, ResearchGraphUpdate } from "@/graph/state";
+import { executePrompt } from "@/prompts";
 
-export async function searchNode(_state: ResearchGraphState): Promise<ResearchGraphUpdate> {
-  return {};
+export async function searchNode(state: ResearchGraphState): Promise<ResearchGraphUpdate> {
+  const response = await executePrompt(
+    "search",
+    {
+      topic: state.topic,
+      round: state.round,
+      queries: state.queries
+    }
+  );
+
+  return { candidateUrls: response.candidateUrls };
 }

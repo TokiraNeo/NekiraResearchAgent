@@ -11,9 +11,13 @@ import { personaPartialDef } from "@/prompts/partials/personaPartial";
 import { planPromptDef } from "@/prompts/templates/planPrompt";
 import { reflectPromptDef } from "@/prompts/templates/reflectPrompt";
 import { reportPromptDef } from "@/prompts/templates/reportPrompt";
+import { searchPromptDef } from "@/prompts/templates/searchPrompt";
+import { readPromptDef } from "@/prompts/templates/readPrompt";
 
 const promptMap = {
   plan: planPromptDef,
+  search: searchPromptDef,
+  read: readPromptDef,
   reflect: reflectPromptDef,
   report: reportPromptDef,
 } as const satisfies AnyPromptMap;
