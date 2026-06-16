@@ -14,7 +14,7 @@ function resolveReflectAction(
 ): ReflectAction {
   const nextRound = round + 1;
 
-  if (requestedAction === "replan" && nextRound > maxRounds) {
+  if (nextRound > maxRounds) {
     return "report";
   }
 
