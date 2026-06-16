@@ -4,8 +4,22 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { ResearchGraphState, ResearchGraphUpdate } from "@/graph/state";
+import { ReflectAction, ResearchGraphState, ResearchGraphUpdate } from "@/graph/state";
 import { executePrompt } from "@/prompts";
+
+function resolveReflectAction(
+  requestedAction: ReflectAction,
+  round: number,
+  maxRounds: number,
+): ReflectAction {
+  const nextRound = round + 1;
+
+  if (requestedAction === "replan" && nextRound > maxRounds) {
+    return "report";
+  }
+
+  return requestedAction;
+}
 
 export async function reflectNode(state: ResearchGraphState): Promise<ResearchGraphUpdate> {
   const response = await executePrompt(
@@ -15,17 +29,20 @@ export async function reflectNode(state: ResearchGraphState): Promise<ResearchGr
       round: state.round,
       maxRounds: state.maxRounds,
       sourceNotes: state.sourceNotes,
-      findings: state.findings
+      findings: state.findings,
     }
   );
 
-  const nextRound = state.round + 1;
-  const shouldReplan = response.shouldReplan && (nextRound <= state.maxRounds);
+  const reflectAction = resolveReflectAction(
+    response.reflectAction,
+    state.round,
+    state.maxRounds,
+  );
 
   return {
     findings: response.findings,
     gaps: response.gaps,
-    shouldReplan: shouldReplan,
-    round: shouldReplan ? nextRound : state.round
+    reflectAction,
+    round: reflectAction === "replan" ? state.round + 1 : state.round,
   };
 }

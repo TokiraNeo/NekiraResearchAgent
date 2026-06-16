@@ -18,25 +18,28 @@ const appendArray = <T>() =>
     default: () => [],
   });
 
-type SourceNote = {
+export type SourceNote = {
   url: string;
   title: string;
   summary: string;
   keyPoints: string[];
 };
 
-type Finding = {
+export type Finding = {
   claim: string;
   sourceUrls: string[];
   confidence: "high" | "medium" | "low";
 };
 
-type Gap = {
+export type Gap = {
   question: string;
   priority: "high" | "medium" | "low";
 };
 
-// 用于存储整个调研过程中的状态信息，供各个Agent节点访问和更新
+export const reflectActions = ["replan", "report", "humanReview"] as const;
+export type ReflectAction = (typeof reflectActions)[number];
+
+// 用于存储整个调研过程中的状态信息，供各个 Agent 节点访问和更新
 export const ResearchState = Annotation.Root({
   // ---- 基础信息
   topic: overwrite(""),
@@ -44,8 +47,8 @@ export const ResearchState = Annotation.Root({
   maxRounds: overwrite(3),
 
   // ---- 搜索计划
-  queries: overwrite<string[]>([]),           // 计划的搜索查询列表
-  candidateUrls: overwrite<string[]>([]),     // 搜索工具输出的候选URL列表
+  queries: overwrite<string[]>([]),         // 计划的搜索查询列表
+  candidateUrls: overwrite<string[]>([]),   // 搜索工具输出的候选 URL 列表
 
   // ---- 信息收集
   sourceNotes: appendArray<SourceNote>(),
@@ -55,9 +58,9 @@ export const ResearchState = Annotation.Root({
 
   // ---- 反思
   gaps: overwrite<Gap[]>([]),
+  reflectAction: overwrite<ReflectAction>("replan"),
 
   // ---- 输出
-  shouldReplan: overwrite(true),    // 是否继续下一轮调研，false则结束进入报告生成阶段
   finalReport: overwrite(""),
 });
 

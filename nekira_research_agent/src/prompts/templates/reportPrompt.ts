@@ -11,10 +11,10 @@ import { PromptDefinition } from "@/prompts/promptDef";
 const reportInputSchema = z.object({
   topic: z.string().min(1),
   findings: z.array(z.object({
-      claim: z.string(),
-      sourceUrls: z.array(z.url()),
-      confidence: z.enum(["high", "medium", "low"]),
-    })),
+    claim: z.string(),
+    sourceUrls: z.array(z.url()),
+    confidence: z.enum(["high", "medium", "low"]),
+  })),
   sourceNotes: z.array(z.object({
     url: z.url().min(1),
     title: z.string().min(1),

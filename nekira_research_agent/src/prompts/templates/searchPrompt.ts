@@ -9,7 +9,7 @@ import { PromptDefinition } from "@/prompts/promptDef";
 
 const searchInputSchema = z.object({
   topic: z.string().min(1),
-  round: z.number().int().nonnegative(),
+  round: z.number().int().positive(),
   queries: z.array(z.string().min(1)).min(1).max(5)
 });
 
