@@ -14,9 +14,6 @@ export default defineConfig(async () => ({
       "@graph": fileURLToPath(new URL("./src/graph", import.meta.url)),
       "@agent": fileURLToPath(new URL("./src/agent", import.meta.url)),
       "@app": fileURLToPath(new URL("./src/app", import.meta.url)),
-      "@pages": fileURLToPath(new URL("./src/app/pages", import.meta.url)),
-      "@components": fileURLToPath(new URL("./src/app/components", import.meta.url)),
-      "@styles": fileURLToPath(new URL("./src/app/styles", import.meta.url)),
     },
   },
 

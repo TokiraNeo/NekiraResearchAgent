@@ -84,8 +84,7 @@ export type FlowRunResult =
   };
 
 // 新发起一个调研流程
-export async function invokeFlow(topic: string): Promise<FlowRunResult> {
-  const threadId = globalThis.crypto.randomUUID();
+export async function invokeFlow(threadId: string,topic: string): Promise<FlowRunResult> {
   const config = { configurable: { thread_id: threadId } };
 
   try {

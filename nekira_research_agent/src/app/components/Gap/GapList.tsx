@@ -1,5 +1,11 @@
+/*
+ * NekiraResearchAgent - Native Research Agent (Rust + Tauri + LangGraph).
+ * Copyright (C) 2026-present TokiraNeo <TokiraNeo@outlook.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { Gap } from '@/graph/state';
-import { GapCard } from "@/components/Gap/GapCard"
+import { GapCard } from "@/app/components/gap/GapCard"
 
 interface GapListProps {
   gaps: Gap[],
