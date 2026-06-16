@@ -10,6 +10,7 @@
       "@/app/*": ["./src/app/*"],
       "@/pages/*": ["./src/app/pages/*"],
       "@/components/*": ["./src/app/components/*"],
+      "@/styles/*": ["./src/app/styles/*"]
     },
 
     "target": "ES2020",

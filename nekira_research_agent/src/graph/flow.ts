@@ -47,7 +47,6 @@ function routeAfterHumanReview(state: ResearchGraphState): HumanReviewRoute {
   }
 }
 
-const checkpointer = new MemorySaver();
 const graph = new StateGraph(ResearchState)
   .addNode(nodeIds.plan, planNode)
   .addNode(nodeIds.search, searchNode)
@@ -69,7 +68,7 @@ const graph = new StateGraph(ResearchState)
     [nodeIds.report]: nodeIds.report
   })
   .addEdge(nodeIds.report, END)
-  .compile({ checkpointer });
+  .compile({ checkpointer: new MemorySaver() });
 
 export type FlowRunResult =
   {
