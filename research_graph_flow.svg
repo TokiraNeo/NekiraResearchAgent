@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 520" width="100%" role="img">
+  <title>Nekira Research Agent Graph Topology</title>
+  <desc>This topology diagram illustrates the complete execution flow of the Nekira Research Agent, including standard search/read loops, AI reflect routing, human-in-the-loop interrupts, dynamic budget extensions, and report generation.</desc>
+  <defs>
+    <!-- Standard Marker for Arrows -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <!-- Danger/Highlight Marker -->
+    <marker id="arrow-danger" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#D85A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <!-- Success/Approve Marker -->
+    <marker id="arrow-success" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .t-bold { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; fill: #2C2C2A; }
+      .t-desc { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; fill: #5F5E5A; }
+      .t-title { font-family: system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 500; fill: #2C2C2A; }
+      .t-subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; fill: #888780; }
+      .t-badge { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; font-weight: 500; fill: #ffffff; }
+      .label-box { fill: #ffffff; stroke: #D3D1C7; stroke-width: 0.5; }
+      .label-text { font-family: system-ui, -apple-system, sans-serif; font-size: 10.5px; fill: #444441; font-weight: 500; }
+    </style>
+  </defs>
+
+  <!-- BACKGROUND GRID / SURFACE -->
+  <rect x="10" y="10" width="660" height="500" rx="16" fill="#fcfbfa" stroke="#EFEFEF" stroke-width="1"/>
+
+  <!-- HEADER -->
+  <text class="t-title" x="35" y="45">Nekira Research Agent — 拓扑图 (Topology)</text>
+  <text class="t-subtitle" x="35" y="65">基于 LangGraph 产物导向 State 与独立中阻断人机协同闭环架构</text>
+
+  <!-- START NODE -->
+  <g>
+    <rect x="35" y="100" width="70" height="34" rx="17" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1"/>
+    <text class="t-bold" x="70" y="117" text-anchor="middle" dominant-baseline="central">START</text>
+  </g>
+
+  <!-- CONNECT START -> PLAN -->
+  <path d="M105 117 L152 117" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- PLAN NODE (c-blue) -->
+  <g>
+    <rect x="160" y="92" width="100" height="50" rx="8" fill="#E6F1FB" stroke="#85B7EB" stroke-width="1"/>
+    <text class="t-bold" x="210" y="110" text-anchor="middle" dominant-baseline="central">planNode</text>
+    <text class="t-desc" x="210" y="128" text-anchor="middle" dominant-baseline="central">规划搜索 Queries</text>
+  </g>
+
+  <!-- CONNECT PLAN -> SEARCH -->
+  <path d="M260 117 L302 117" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- SEARCH NODE (c-blue) -->
+  <g>
+    <rect x="310" y="92" width="100" height="50" rx="8" fill="#E6F1FB" stroke="#85B7EB" stroke-width="1"/>
+    <text class="t-bold" x="360" y="110" text-anchor="middle" dominant-baseline="central">searchNode</text>
+    <text class="t-desc" x="360" y="128" text-anchor="middle" dominant-baseline="central">执行 webSearch</text>
+  </g>
+
+  <!-- CONNECT SEARCH -> READ -->
+  <path d="M410 117 L452 117" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- READ NODE (c-blue) -->
+  <g>
+    <rect x="460" y="92" width="100" height="50" rx="8" fill="#E6F1FB" stroke="#85B7EB" stroke-width="1"/>
+    <text class="t-bold" x="510" y="110" text-anchor="middle" dominant-baseline="central">readNode</text>
+    <text class="t-desc" x="510" y="128" text-anchor="middle" dominant-baseline="central">抓取并精读网页</text>
+  </g>
+
+  <!-- CONNECT READ -> REFLECT -->
+  <path d="M510 142 L510 182" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- REFLECT NODE (c-purple) -->
+  <g>
+    <rect x="440" y="190" width="140" height="56" rx="8" fill="#EEEDFE" stroke="#AFA9EC" stroke-width="1"/>
+    <text class="t-bold" x="510" y="210" text-anchor="middle" dominant-baseline="central">reflectNode [反思]</text>
+    <text class="t-desc" x="510" y="228" text-anchor="middle" dominant-baseline="central">提炼成果 &amp; 诊断漏洞</text>
+  </g>
+
+  <!-- Conditional Edge from REFLECT -->
+  <!-- Line down to Report -->
+  <path d="M510 246 L510 392" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="465" y="310" width="90" height="20" rx="4" class="label-box"/>
+  <text class="label-text" x="510" y="320" text-anchor="middle" dominant-baseline="central">"report" (收敛)</text>
+
+  <!-- Line left to Loop (replan) -->
+  <path d="M440 218 L210 218 L210 148" fill="none" stroke="#534AB7" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="250" y="208" width="115" height="20" rx="4" class="label-box"/>
+  <text class="label-text" x="307" y="218" text-anchor="middle" dominant-baseline="central">"replan" (自动下一轮)</text>
+
+  <!-- Line diagonal to Human Review (interrupted) -->
+  <path d="M440 230 L280 230 L280 292" fill="none" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arrow-danger)"/>
+  <rect x="290" y="240" width="130" height="20" rx="4" style="fill: #FAECE7; stroke: #F5C4B3; stroke-width: 0.5;"/>
+  <text class="label-text" x="355" y="250" text-anchor="middle" dominant-baseline="central" style="fill: #993C1D;">"humanReview" (阻断人审)</text>
+
+  <!-- HUMAN REVIEW NODE (c-amber, the heart of our flow) -->
+  <g>
+    <rect x="200" y="300" width="160" height="60" rx="8" fill="#FAEEDA" stroke="#FAC775" stroke-width="1.2"/>
+    <rect x="210" y="306" width="65" height="16" rx="3" fill="#BA7517"/>
+    <text class="t-badge" x="242.5" y="315" text-anchor="middle">Interrupt 点</text>
+    <text class="t-bold" x="280" y="338" text-anchor="middle" dominant-baseline="central">humanReviewNode</text>
+  </g>
+
+  <!-- User Input interaction visualization -->
+  <path d="M280 360 L280 400 L180 400 L180 340 L194 340" fill="none" stroke="#EF9F27" stroke-dasharray="3 3" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="t-desc" x="180" y="415" text-anchor="middle" style="fill: #BA7517;">React UI 交互编辑 &amp; 决策</text>
+
+  <!-- Resume branches from Human Review -->
+  <!-- Branch 1: Approve & Replan (with dynamic budget + gaps) -->
+  <path d="M200 320 L110 320 L110 270 L194 135" fill="none" stroke="#1D9E75" stroke-width="1.2" marker-end="url(#arrow-success)"/>
+  <rect x="60" y="260" width="110" height="20" rx="4" style="fill: #E1F5EE; stroke: #9FE1CB; stroke-width: 0.5;"/>
+  <text class="label-text" x="115" y="270" text-anchor="middle" dominant-baseline="central" style="fill: #0F6E56;">"replan" (追加预算)</text>
+
+  <!-- Branch 2: Reject & Report -->
+  <path d="M360 330 L452 330 L452 392" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="375" y="340" width="80" height="20" rx="4" class="label-box"/>
+  <text class="label-text" x="415" y="350" text-anchor="middle" dominant-baseline="central">"report" (拒绝继续)</text>
+
+  <!-- REPORT NODE (c-teal) -->
+  <g>
+    <rect x="440" y="400" width="140" height="50" rx="8" fill="#E1F5EE" stroke="#9FE1CB" stroke-width="1"/>
+    <text class="t-bold" x="510" y="418" text-anchor="middle" dominant-baseline="central">reportNode [出报告]</text>
+    <text class="t-desc" x="510" y="436" text-anchor="middle" dominant-baseline="central">生成完整综合调研总结</text>
+  </g>
+
+  <!-- CONNECT REPORT -> END -->
+  <path d="M580 425 L602 425" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- END NODE -->
+  <g>
+    <rect x="610" y="408" width="50" height="34" rx="17" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1"/>
+    <text class="t-bold" x="635" y="425" text-anchor="middle" dominant-baseline="central">END</text>
+  </g>
+
+</svg>

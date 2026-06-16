@@ -14,7 +14,9 @@ function resolveReflectAction(
 ): ReflectAction {
   const nextRound = round + 1;
 
-  if (nextRound > maxRounds) {
+  // 如果请求的行动是 "replan"，但执行它会导致超过最大轮数限制，则改为 "report"。
+  // humanReview会自动追加最大轮数，因此这里不需要额外考虑humanReview的情况。
+  if (requestedAction === "replan" && nextRound > maxRounds) {
     return "report";
   }
 
