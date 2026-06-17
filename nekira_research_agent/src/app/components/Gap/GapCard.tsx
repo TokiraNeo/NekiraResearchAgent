@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Gap } from "@/graph/state";
+import styles from "./GapCard.module.css";
 
 interface GapCardProps {
   index: number;
@@ -15,7 +16,10 @@ interface GapCardProps {
 }
 
 export function GapCard({ index, gap, onUpdate, onDelete }: GapCardProps) {
-  // 优先级切换循环 Low -> Medium -> High -> Low ...
+  // 局部焦点控制，触发外围 1px 极窄极光边与 Soft Glow 软发光
+  const [isFocused, setIsFocused] = useState(false);
+
+  // 优先级切换循环 low -> medium -> high -> low ...
   const togglePriority = () => {
     const nextPriorityMap: Record<Gap["priority"], Gap["priority"]> = {
       low: "medium",
@@ -23,87 +27,50 @@ export function GapCard({ index, gap, onUpdate, onDelete }: GapCardProps) {
       high: "low"
     };
 
-    onUpdate(
-      index,
-      {
-        ...gap,
-        priority: nextPriorityMap[gap.priority]
-      }
-    );
+    onUpdate(index, {
+      ...gap,
+      priority: nextPriorityMap[gap.priority]
+    });
   };
 
-  // 优先级 Badge 的颜色映射 @TODO: 这里后续通过 CSS 变量来实现主题适配
-  const badgeStyles: Record<Gap["priority"], React.CSSProperties> = {
-    high: { background: "var(--color-background-danger, #FCEBEB)", color: "var(--color-text-danger, #A32D2D)" },
-    medium: { background: "var(--color-background-warning, #FAEEDA)", color: "var(--color-text-warning, #BA7517)" },
-    low: { background: "var(--color-background-info, #E6F1FB)", color: "var(--color-text-info, #185FA5)" },
+  // 绑定特定优先级徽章的 CSS 模块样式
+  const badgeClassMap: Record<Gap["priority"], string> = {
+    high: `${styles.badge} ${styles.badge_high}`,
+    medium: `${styles.badge} ${styles.badge_medium}`,
+    low: `${styles.badge} ${styles.badge_low}`,
   };
 
   return (
-    <div style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "12px",
-      background: "var(--color-background-primary, #ffffff)",
-      padding: "10px 12px",
-      borderRadius: "var(--border-radius-md, 8px)",
-      border: "0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.15))"
-    }}>
-      {/* 序号 */}
-      <span style={{ fontSize: "11px", color: "var(--color-text-tertiary)", width: "16px" }}>{index + 1}</span>
+    <div className={isFocused ? styles.cardWrapperActive : styles.cardWrapper}>
+      <div className={styles.cardContent}>
+        {/* 序号 */}
+        <span className={styles.indexCircle}>{index + 1}</span>
 
-      {/* 问题编辑输入框 */}
-      <input
-        type="text"
-        value={gap.question}
-        onChange={(e) => onUpdate(index, { ...gap, question: e.target.value })}
-        style={{
-          flex: 1,
-          border: "none",
-          background: "transparent",
-          fontSize: "12.5px",
-          outline: "none",
-          fontFamily: "inherit",
-          color: "var(--color-text-primary, #2C2C2A)"
-        }}
-        placeholder="输入要深入研究的关键缺口问题..."
-      />
+        {/* 极简无边框输入框 */}
+        <input
+          type="text"
+          className={styles.inputField}
+          value={gap.question}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onChange={(e) => onUpdate(index, { ...gap, question: e.target.value })}
+          placeholder="输入要深入研究的关键缺口问题..."
+        />
 
-      {/* 优先级点击切换 Badge */}
-      <span
-        onClick={togglePriority}
-        style={{
-          cursor: "pointer",
-          fontSize: "10.5px",
-          fontWeight: 500,
-          padding: "3px 8px",
-          borderRadius: "4px",
-          userSelect: "none",
-          transition: "all 0.1s",
-          ...badgeStyles[gap.priority]
-        }}
-      >
-        {gap.priority.toUpperCase()}
-      </span>
+        {/* 优先级点击切换 Badge */}
+        <span className={badgeClassMap[gap.priority]} onClick={togglePriority}>
+          {gap.priority.toUpperCase()}
+        </span>
 
-      {/* 删除按钮 */}
-      <button
-        onClick={() => onDelete(index)}
-        style={{
-          background: "transparent",
-          border: "none",
-          color: "var(--color-text-danger, #A32D2D)",
-          cursor: "pointer",
-          fontSize: "12px",
-          padding: "4px 8px",
-          borderRadius: "4px",
-          display: "flex",
-          alignItems: "center"
-        }}
-        title="删除此缺口"
-      >
-        ✕
-      </button>
+        {/* 删除按钮 */}
+        <button
+          className={styles.deleteBtn}
+          onClick={() => onDelete(index)}
+          title="删除此缺口"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   );
 }

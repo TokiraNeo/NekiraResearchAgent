@@ -10,8 +10,6 @@ import { HumanReviewRequest } from "@/graph/state";
 export interface ResearchSession {
   id: string;
   topic: string;
-  round: number;
-  maxRounds: number;
   status: "Idle" | "Running" | "Interrupted" | "Completed" | "Failed";
   activeNode: keyof typeof nodeIds | null;
   reveiwRequest: HumanReviewRequest | null;

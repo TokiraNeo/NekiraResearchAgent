@@ -1,0 +1,99 @@
+/*
+ * NekiraResearchAgent - Global Aurora Design Tokens and Base Atomic Classes.
+ * Copyright (C) 2026-present TokiraNeo <TokiraNeo@outlook.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+:root {
+  /* ==================== 1. 极致干净的实体表面 (Solid Surface Tokens) ==================== */
+  --color-page-bg: #F4F3EF;          /* 极淡暖微灰 */
+  --color-surface-card: #FFFFFF;     /* 纯白实体卡盘 */
+  --color-surface-panel: #FAF9F6;    /* 磨砂控制台底色 */
+
+  /* ==================== 2. 澄澈文字颜色层级 (Typography Tokens) ==================== */
+  --color-text-primary: #2C2C2A;     /* 墨碳黑 */
+  --color-text-secondary: #5F5E5A;   /* 石磨灰 */
+  --color-text-tertiary: #888780;    /* 雾面灰 */
+  --color-text-active: #26215C;      /* 极光深蓝 */
+
+  /* ==================== 3. 极窄 1px 晨曦虹彩偏光 (Aurora Edge Tokens) ==================== */
+  --aurora-gradient: linear-gradient(
+    135deg,
+    #FFD1E6 0%,
+    #D4E2FF 35%,
+    #C8FFF0 70%,
+    #FFF2C5 100%
+  );
+
+  /* ==================== 4. 极致克制的环境软自发光 (Soft Glow Tokens) ==================== */
+  --shadow-flat-static: 
+    0 2px 12px -1px rgba(136, 135, 128, 0.03),
+    0 1px 4px -1px rgba(136, 135, 128, 0.01);
+
+  --shadow-active-glow:
+    0 10px 36px 0 rgba(142, 151, 230, 0.07), 
+    0 0 16px 3px rgba(175, 169, 236, 0.24);
+
+  /* ==================== 5. 微交互过渡曲线 (Micro-Interactions) ==================== */
+  --transition-smooth: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ==================== 6. 基础偏光与呼吸动画 ==================== */
+@keyframes aurora-pulse-shadow {
+  0% {
+    box-shadow: 0 10px 36px 0 rgba(142, 151, 230, 0.05), 0 0 12px 1px rgba(175, 169, 236, 0.18);
+  }
+  50% {
+    box-shadow: 0 10px 36px 0 rgba(142, 151, 230, 0.11), 0 0 20px 4px rgba(175, 169, 236, 0.32);
+  }
+  100% {
+    box-shadow: 0 10px 36px 0 rgba(142, 151, 230, 0.05), 0 0 12px 1px rgba(175, 169, 236, 0.18);
+  }
+}
+
+/* ==================== 7. 全局原子功能类 (Atomic Classes Only) ==================== */
+
+/* 7.1 核心：1px 圆角双背景自适应描边基盘 (不包含特定 Padding 或内部 Layout，供组件继承) */
+.aurora-card-base {
+  box-sizing: border-box;
+  padding: 1px; /* 撑开 1px border */
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-flat-static);
+  
+  background-clip: content-box, border-box;
+  background-origin: content-box, border-box;
+  background-image: 
+    linear-gradient(var(--color-surface-card), var(--color-surface-card)), 
+    linear-gradient(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.04));
+}
+
+.aurora-card-base:hover {
+  background-image: 
+    linear-gradient(var(--color-surface-card), var(--color-surface-card)), 
+    linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.07));
+}
+
+/* 7.2 激发自发光极光边 */
+.aurora-card-base-active {
+  box-shadow: var(--shadow-active-glow);
+  background-image: 
+    linear-gradient(var(--color-surface-card), var(--color-surface-card)), 
+    var(--aurora-gradient);
+}
+
+/* 7.3 激发呼吸式发光边 */
+.aurora-card-base-breathe {
+  animation: aurora-pulse-shadow 3s infinite ease-in-out;
+  background-image: 
+    linear-gradient(var(--color-surface-card), var(--color-surface-card)), 
+    var(--aurora-gradient);
+}
+
+/* 7.4 基础卡片实体内容底盘 */
+.aurora-card-content-base {
+  box-sizing: border-box;
+  background: var(--color-surface-card);
+  border-radius: 11px; /* 圆角贴合 12px */
+  width: 100%;
+}

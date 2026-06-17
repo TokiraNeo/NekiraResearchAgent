@@ -1,0 +1,65 @@
+/*
+ * NekiraResearchAgent - GapList CSS Module.
+ * Copyright (C) 2026-present TokiraNeo <TokiraNeo@outlook.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+/* 垂直列表容器 */
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+/* 暂无数据空白卡：极其澄澈干净的微灰实体浅框，无多余元素 */
+.emptyState {
+  box-sizing: border-box;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-tertiary, #888780);
+  font-size: 12.5px;
+  background: var(--color-surface-panel, #FAF9F6);
+  border-radius: var(--border-radius-md, 8px);
+  border: 1px dashed rgba(0, 0, 0, 0.05);
+  user-select: none;
+}
+
+/* 
+  新增缺口按钮：
+  极致精致的极细 dashed 面板。Hover 时拉起微弱的极光晨曦过渡！
+*/
+.addBtn {
+  align-self: flex-start;
+  background: var(--color-surface-card, #FFFFFF);
+  border: 1px dashed rgba(0, 0, 0, 0.1);
+  color: var(--color-text-secondary, #5F5E5A);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-smooth, all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-flat-static, 0 2px 12px rgba(0,0,0,0.02));
+}
+
+.addBtn:hover {
+  color: var(--color-text-active, #26215C);
+  border-style: solid;
+  /* 触发微弱、高级的虹彩边框 Hover */
+  border-color: transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: 
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)), 
+    var(--aurora-gradient);
+  
+  box-shadow: 0 4px 14px rgba(142, 151, 230, 0.08);
+}
+
+.addBtn:active {
+  transform: scale(0.98);
+}

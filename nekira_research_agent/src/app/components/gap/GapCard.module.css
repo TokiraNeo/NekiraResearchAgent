@@ -1,0 +1,140 @@
+/*
+ * NekiraResearchAgent - GapCard CSS Module.
+ * Copyright (C) 2026-present TokiraNeo <TokiraNeo@outlook.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+/* 默认静态容器：1px 细边框 + 实色纯白填充 */
+.cardWrapper {
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 12px;
+  padding: 1px; /* 重点：这个 padding 就是渐变边框的厚度 */
+  transition: var(--transition-smooth, all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1));
+  box-shadow: var(--shadow-flat-static, 0 2px 12px -1px rgba(136, 135, 128, 0.03));
+  width: 100%;
+
+  /* 默认静态背景：纯白实色填充 + 1px 微灰色描边 */
+  background-clip: content-box, border-box;
+  background-origin: content-box, border-box;
+  background-image: 
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)), 
+    linear-gradient(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.04));
+}
+
+/* Hover 状态：边框微亮 */
+.cardWrapper:hover {
+  background-image: 
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)), 
+    linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.07));
+}
+
+/* 激活选中状态：1px 极光流光边框 + 软自发光投影 */
+.cardWrapperActive {
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 12px;
+  padding: 1px;
+  width: 100%;
+  transition: var(--transition-smooth, all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1));
+  box-shadow: var(--shadow-active-glow, 0 10px 36px 0 rgba(142, 151, 230, 0.07));
+
+  background-clip: content-box, border-box;
+  background-origin: content-box, border-box;
+  background-image: 
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)), 
+    var(--aurora-gradient);
+}
+
+/* 内容填充区 */
+.cardContent {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 15px; /* 舒适紧凑的原子 Padding */
+  border-radius: 11px; /* 完美贴合外层 */
+  background: var(--color-surface-card, #FFFFFF);
+  width: 100%;
+}
+
+/* 序号数字圈 */
+.indexCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-page-bg, #F4F3EF);
+  border: 0.5px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #5F5E5A);
+  user-select: none;
+}
+
+/* 输入框 */
+.inputField {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary, #2C2C2A);
+  outline: none;
+  transition: var(--transition-smooth, all 0.25s ease);
+}
+.inputField::placeholder {
+  color: var(--color-text-tertiary, #888780);
+}
+
+/* 优先级徽章样式映射 */
+.badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2.5px 7px;
+  border-radius: 4px;
+  user-select: none;
+  cursor: pointer;
+  transition: var(--transition-smooth, all 0.15s ease);
+}
+.badge:active {
+  transform: scale(0.95);
+}
+
+.badge_high {
+  background: rgba(226, 75, 74, 0.08);
+  color: #A32D2D;
+  border: 0.5px solid rgba(226, 75, 74, 0.15);
+}
+.badge_medium {
+  background: rgba(239, 159, 39, 0.08);
+  color: #854F0B;
+  border: 0.5px solid rgba(239, 159, 39, 0.15);
+}
+.badge_low {
+  background: rgba(55, 138, 221, 0.08);
+  color: #0C447C;
+  border: 0.5px solid rgba(55, 138, 221, 0.15);
+}
+
+/* 删除按钮 */
+.deleteBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-tertiary, #888780);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: var(--transition-smooth, all 0.2s ease);
+}
+.deleteBtn:hover {
+  color: #A32D2D;
+  background: rgba(226, 75, 74, 0.05);
+}

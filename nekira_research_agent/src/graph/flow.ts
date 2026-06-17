@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { StateGraph, START, END, MemorySaver, Command } from "@langchain/langgraph";
-import { ResearchGraphState, ResearchState, HumanReviewRequest, HumanReviewFeedback } from "@/graph/state";
+import { StateGraph, START, END, MemorySaver, Command, LangGraphRunnableConfig } from "@langchain/langgraph";
+import { ResearchGraphState, ResearchState, HumanReviewRequest, HumanReviewFeedback, ReflectAction } from "@/graph/state";
 import {
   humanReviewNode,
   nodeIds,
+  nodeIdSet,
   planNode,
   readNode,
   reflectNode,
@@ -83,9 +84,27 @@ export type FlowRunResult =
     request: HumanReviewRequest
   };
 
-// 新发起一个调研流程
-export async function invokeFlow(threadId: string,topic: string): Promise<FlowRunResult> {
-  const config = { configurable: { thread_id: threadId } };
+// 定义节点进入/生命周期事件回调
+export type NodeStartCallback = (nodeName: string) => void;
+
+// 新发起一个调研流程，支持传入可选的 onNodeStart 原生生命周期回调
+export async function invokeFlow(
+  threadId: string,
+  topic: string,
+  onNodeStart?: NodeStartCallback
+): Promise<FlowRunResult> {
+  const config: LangGraphRunnableConfig = {
+    configurable: { thread_id: threadId },
+    callbacks: [
+      {
+        handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
+          if (onNodeStart && runName && nodeIdSet.has(runName)) {
+            onNodeStart(runName);
+          }
+        },
+      }
+    ]
+  };
 
   try {
     const stream = await graph.stream({ topic }, config);
@@ -97,9 +116,24 @@ export async function invokeFlow(threadId: string,topic: string): Promise<FlowRu
   }
 }
 
-// 人审结束后恢复图的运行，继续后续流程
-export async function resumeFlow(threadId: string, feedback: HumanReviewFeedback): Promise<FlowRunResult> {
-  const config = { configurable: { thread_id: threadId } };
+// 人审结束后恢复图的运行，同样支持生命周期回调
+export async function resumeFlow(
+  threadId: string,
+  feedback: HumanReviewFeedback,
+  onNodeStart?: NodeStartCallback
+): Promise<FlowRunResult> {
+  const config: LangGraphRunnableConfig = {
+    configurable: { thread_id: threadId },
+    callbacks: [
+      {
+        handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
+          if (onNodeStart && runName && nodeIdSet.has(runName)) {
+            onNodeStart(runName);
+          }
+        },
+      }
+    ]
+  };
 
   try {
     const stream = await graph.stream(

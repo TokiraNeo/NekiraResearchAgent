@@ -21,3 +21,5 @@ export const nodeIds = {
   humanReview: "humanReview",
   report: "report",
 } as const;
+
+export const nodeIdSet = new Set<string>(Object.values(nodeIds));
