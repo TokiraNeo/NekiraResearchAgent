@@ -4,8 +4,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { StateGraph, START, END, MemorySaver, Command, LangGraphRunnableConfig } from "@langchain/langgraph";
-import { ResearchGraphState, ResearchState, HumanReviewRequest, HumanReviewFeedback, ReflectAction } from "@/graph/state";
+import {
+  StateGraph,
+  START,
+  END,
+  MemorySaver,
+  Command,
+  LangGraphRunnableConfig,
+} from "@langchain/langgraph";
+import { ResearchGraphState, ResearchState, HumanReviewRequest, HumanReviewFeedback } from "@/graph/state";
 import {
   humanReviewNode,
   nodeIds,
@@ -82,28 +89,38 @@ export type FlowRunResult =
     status: "interrupted",
     threadId: string,
     request: HumanReviewRequest
-  };
+  }
+  |
+  {
+    status: "aborted",
+    threadId: string,
+  }
 
-// 定义节点进入/生命周期事件回调
-export type NodeStartCallback = (nodeName: string) => void;
+// 定义流程运行时可选参数
+export type FlowRuntimeConfig = {
+  onNodeStart?: (nodeName: string) => void;   // 进入节点时的回调
+  abortSignal?: AbortSignal
+};
 
 // 新发起一个调研流程，支持传入可选的 onNodeStart 原生生命周期回调
 export async function invokeFlow(
   threadId: string,
   topic: string,
-  onNodeStart?: NodeStartCallback
+  runtimeConfig?: FlowRuntimeConfig
 ): Promise<FlowRunResult> {
   const config: LangGraphRunnableConfig = {
     configurable: { thread_id: threadId },
     callbacks: [
       {
         handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
-          if (onNodeStart && runName && nodeIdSet.has(runName)) {
-            onNodeStart(runName);
+          if (!runtimeConfig || !runtimeConfig.onNodeStart) { return; }
+          if (runName && nodeIdSet.has(runName)) {
+            runtimeConfig.onNodeStart(runName);
           }
-        },
+        }
       }
-    ]
+    ],
+    signal: (runtimeConfig && runtimeConfig.abortSignal) ? runtimeConfig.abortSignal : undefined
   };
 
   try {
@@ -120,19 +137,21 @@ export async function invokeFlow(
 export async function resumeFlow(
   threadId: string,
   feedback: HumanReviewFeedback,
-  onNodeStart?: NodeStartCallback
+  runtimeConfig?: FlowRuntimeConfig
 ): Promise<FlowRunResult> {
   const config: LangGraphRunnableConfig = {
     configurable: { thread_id: threadId },
     callbacks: [
       {
         handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
-          if (onNodeStart && runName && nodeIdSet.has(runName)) {
-            onNodeStart(runName);
+          if (!runtimeConfig || !runtimeConfig.onNodeStart) { return; }
+          if (runName && nodeIdSet.has(runName)) {
+            runtimeConfig.onNodeStart(runName);
           }
-        },
+        }
       }
-    ]
+    ],
+    signal: (runtimeConfig && runtimeConfig.abortSignal) ? runtimeConfig.abortSignal : undefined
   };
 
   try {
@@ -149,10 +168,19 @@ export async function resumeFlow(
 }
 
 // 内部辅助函数：通用消费流的逻辑，并实时检测流中产生的中断信号
-async function consumeFlowStream(threadId: string, stream: AsyncGenerator<Record<string, any>>): Promise<FlowRunResult> {
+async function consumeFlowStream(
+  threadId: string,
+  stream: AsyncGenerator<Record<string, any>>,
+  abortSignal?: AbortSignal
+): Promise<FlowRunResult> {
   let finalReport = "";
 
   for await (const chunk of stream) {
+    // 检查是否已被取消
+    if (abortSignal && abortSignal.aborted) {
+      return { status: "aborted", threadId };
+    }
+
     // 检测是否有中断信号
     if ("__interrupt__" in chunk) {
       const interruptInfo = chunk.__interrupt__[0];

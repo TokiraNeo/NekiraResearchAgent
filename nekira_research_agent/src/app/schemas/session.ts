@@ -9,8 +9,9 @@ import { HumanReviewRequest } from "@/graph/state";
 
 export interface ResearchSession {
   id: string;
+  name: string;
   topic: string;
-  status: "Idle" | "Running" | "Interrupted" | "Completed" | "Failed";
+  status: "Idle" | "Running" | "Interrupted" | "Completed" | "Failed" | "Aborted";
   activeNode: keyof typeof nodeIds | null;
   reveiwRequest: HumanReviewRequest | null;
   finalReport: string;
