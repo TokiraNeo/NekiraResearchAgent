@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import React from "react";
 import { Gap } from "@/graph/state";
 import { GapCard } from "./GapCard";
 import styles from "./GapList.module.css";

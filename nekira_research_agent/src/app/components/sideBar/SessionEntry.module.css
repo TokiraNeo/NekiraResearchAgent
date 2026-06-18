@@ -1,0 +1,206 @@
+/*
+ * NekiraResearchAgent - SessionEntry CSS Module.
+ * Copyright (C) 2026-present TokiraNeo <TokiraNeo@outlook.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.cardWrapper {
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 12px;
+  padding: 1px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--transition-smooth, all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1));
+  box-shadow: var(--shadow-flat-static, 0 2px 12px -1px rgba(136, 135, 128, 0.03));
+  width: 100%;
+
+  /* 极致干净白：双背景 1px 细微边界描边 */
+  background-clip: content-box, border-box;
+  background-origin: content-box, border-box;
+  background-image:
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)),
+    linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.03));
+}
+
+.cardWrapper:hover {
+  background-image:
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)),
+    linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.06));
+}
+
+/* 激活选中的极光外描边 */
+.cardActive {
+  box-shadow: var(--shadow-active-glow, 0 10px 36px 0 rgba(142, 151, 230, 0.07));
+  background-image:
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)),
+    var(--aurora-gradient);
+}
+
+/* 等待人审时高亮的极光呼吸灯描边 */
+.cardInterrupted {
+  animation: aurora-pulse-shadow 3s infinite ease-in-out;
+  background-image:
+    linear-gradient(var(--color-surface-card, #FFFFFF), var(--color-surface-card, #FFFFFF)),
+    var(--aurora-gradient);
+}
+
+.cardContent {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: var(--color-surface-card, #FFFFFF);
+  width: 100%;
+}
+
+/* 序号/Q 徽章 */
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-page-bg, #F4F3EF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #5F5E5A);
+  flex-shrink: 0;
+}
+
+/* 旋转 Loading */
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(38, 33, 92, 0.15);
+  border-top-color: var(--color-text-active, #26215C);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 标题区域 */
+.titleArea {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topicText {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary, #2C2C2A);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.renameInput {
+  border: none;
+  background: var(--color-page-bg, #F4F3EF);
+  padding: 2px 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  outline: none;
+  color: var(--color-text-primary, #2C2C2A);
+  width: 100%;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nodeText {
+  font-size: 10px;
+  color: var(--color-text-tertiary, #888780);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* 状态徽章 */
+.badge {
+  font-size: 9px;
+  font-weight: 500;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1;
+}
+
+.badgeRunning {
+  background: rgba(38, 33, 92, 0.05);
+  color: var(--color-text-active, #26215C);
+  border: 0.5px solid rgba(38, 33, 92, 0.15);
+}
+
+.badgeInterrupted {
+  background: rgba(239, 159, 39, 0.08);
+  color: #854F0B;
+  border: 0.5px solid rgba(239, 159, 39, 0.15);
+}
+
+.badgeCompleted {
+  background: rgba(15, 110, 86, 0.05);
+  color: #085041;
+  border: 0.5px solid rgba(15, 110, 86, 0.1);
+}
+
+.badgeFailed {
+  background: rgba(226, 75, 74, 0.05);
+  color: #A32D2D;
+  border: 0.5px solid rgba(226, 75, 74, 0.1);
+}
+
+.badgeAborted {
+  background: rgba(136, 135, 128, 0.08);
+  color: var(--color-text-secondary, #5F5E5A);
+  border: 0.5px solid rgba(136, 135, 128, 0.15);
+}
+
+/* 右侧浮动操作钮 */
+.actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: var(--transition-smooth, opacity 0.2s ease);
+}
+
+.cardWrapper:hover .actions {
+  opacity: 1;
+}
+
+.actionBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-tertiary, #888780);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.actionBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text-primary, #2C2C2A);
+}
+
+.deleteBtn:hover {
+  background: rgba(226, 75, 74, 0.06);
+  color: #A32D2D !important;
+}

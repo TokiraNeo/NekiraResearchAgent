@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Gap } from "@/graph/state";
 import styles from "./GapCard.module.css";
 
