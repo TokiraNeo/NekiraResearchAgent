@@ -35,7 +35,7 @@ interface ModelKey {
 interface ModelConfig {
   model: string,
   temperature: number,
-  maxTokens: number,
+  maxTokens?: number,
   timeout: number,
 }
 

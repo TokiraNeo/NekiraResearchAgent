@@ -17,7 +17,7 @@ class ModelFactory {
       throw new Error(`Model profile ${level} not found.`);
     }
 
-    return new ChatOpenAI({
+    const options: any = {
       apiKey: modelKey.apiKey,
       configuration: {
         baseURL: modelKey.baseUrl,
@@ -26,9 +26,15 @@ class ModelFactory {
       maxConcurrency: 5,
       model: profile.model,
       temperature: profile.temperature,
-      maxTokens: profile.maxTokens,
       timeout: profile.timeout,
-    });
+    };
+
+    // 只有在明确配置了 maxTokens 限制时，才进行传递（未设置时不传递，由 API 自动采用最大额度，防止截断）
+    if (profile.maxTokens !== undefined) {
+      options.maxTokens = profile.maxTokens;
+    }
+
+    return new ChatOpenAI(options);
   }
 
   static getClient(level: ModelProfileLevel): ChatOpenAI {

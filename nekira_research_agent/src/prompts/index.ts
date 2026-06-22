@@ -29,6 +29,8 @@ export type AppPromptMap = typeof promptMap;
 export function initPrompts(): void {
   promptRegistry.registerPartial("persona", personaPartialDef);
 }
+// 在应用启动时调用 initPrompts 来注册提示词
+initPrompts();
 
 export async function executePrompt<K extends keyof AppPromptMap>(
   id: K,
