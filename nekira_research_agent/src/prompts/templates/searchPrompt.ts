@@ -10,11 +10,11 @@ import { PromptDefinition } from "@/prompts/promptDef";
 const searchInputSchema = z.object({
   topic: z.string().min(1),
   round: z.number().int().positive(),
-  queries: z.array(z.string().min(1)).min(1).max(5)
+  queries: z.array(z.string().min(1)).min(1)
 });
 
 const searchOutputSchema = z.object({
-  candidateUrls: z.array(z.url()).min(1).max(10)
+  candidateUrls: z.array(z.url()).min(1)
 });
 
 type SearchPromptInput = z.infer<typeof searchInputSchema>;

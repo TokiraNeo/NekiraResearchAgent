@@ -25,7 +25,7 @@ const planInputSchema = z.object({
 
 // plan阶段的输出结构定义
 const planOutputSchema = z.object({
-  queries: z.array(z.string().min(1)).min(1).max(5),
+  queries: z.array(z.string().min(1)).min(1),
 });
 
 type PlanPromptInput = z.infer<typeof planInputSchema>;

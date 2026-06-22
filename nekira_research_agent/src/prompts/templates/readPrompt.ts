@@ -9,7 +9,7 @@ import { PromptDefinition } from "@/prompts/promptDef";
 
 const readInputSchema = z.object({
   topic: z.string().min(1),
-  candidateUrls: z.array(z.url()).min(1).max(10)
+  candidateUrls: z.array(z.url()).min(1)
 });
 
 const readOutputSchema = z.object({
@@ -17,7 +17,7 @@ const readOutputSchema = z.object({
     url: z.url().min(1),
     title: z.string().min(1),
     summary: z.string().min(1),
-    keyPoints: z.array(z.string().min(1)).min(1).max(5)
+    keyPoints: z.array(z.string().min(1)).min(1)
   })).min(1)
 });
 

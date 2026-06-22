@@ -17,7 +17,7 @@ const reflectInputSchema = z.object({
     url: z.url().min(1),
     title: z.string().min(1),
     summary: z.string().min(1),
-    keyPoints: z.array(z.string().min(1)).min(1).max(5)
+    keyPoints: z.array(z.string().min(1)).min(1)
   })),
   findings: z.array(z.object({
     claim: z.string(),
