@@ -162,6 +162,7 @@ export function useSessionService() {
     invokeNewSession,
     resumeSession,
     deleteSession,
-    renameSession
+    renameSession,
+    appendSessionLog
   }
 }

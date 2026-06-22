@@ -4,34 +4,37 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { useSessionService } from "@/app/hooks/sessionService";
+import { SessionSideBar } from "@/app/components/sideBar/SessionSideBar";
+import { SessionWorkspace } from "@/app/components/workspace/SessionWorkspace";
+
 export function HomePage() {
+  const service = useSessionService();
+  
+  // 查找当前处于活跃状态的 Session 实例
+  const currentSession = service.sessions.find(s => s.id === service.currentSessionId) || null;
+
   return (
     <div style={{
       display: "flex",
-      width: "100%",
+      width: "100vw",
       height: "100vh",
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-      gap: "12px",
+      overflow: "hidden",
       background: "var(--color-page-bg, #F4F3EF)"
     }}>
-      <h1 style={{
-        fontSize: "18px",
-        fontWeight: 500,
-        margin: 0,
-        color: "var(--color-text-primary, #2C2C2A)",
-        letterSpacing: "-0.01em"
+      {/* 1. 左侧会话/话题管理侧边栏 */}
+      <SessionSideBar service={service} />
+
+      {/* 2. 右侧主工作区控制台（自适应状态渲染） */}
+      <main style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "hidden"
       }}>
-        Nekira Research Agent
-      </h1>
-      <p style={{
-        fontSize: "12px",
-        color: "var(--color-text-tertiary, #888780)",
-        margin: 0
-      }}>
-        准备就绪 — 纯净极光白态工作空间已成功挂载
-      </p>
+        <SessionWorkspace currentSession={currentSession} service={service} />
+      </main>
     </div>
   );
 }

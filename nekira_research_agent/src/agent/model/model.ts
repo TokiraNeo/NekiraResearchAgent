@@ -46,8 +46,16 @@ type ModelProfileType = Record<ModelProfileLevel, ModelConfig>;
 // ------------------------------------------------------
 
 export const modelKey: ModelKey = {
-  baseUrl: requireEnv("VITE_BASE_URL"),
-  apiKey: requireEnv("VITE_API_KEY"),
-}
+  get baseUrl(): string {
+    return requireEnv("VITE_BASE_URL");
+  },
+  get apiKey(): string {
+    return requireEnv("VITE_API_KEY");
+  }
+};
 
-export const modelProfiles = requireJsonEnv<ModelProfileType>("VITE_MODEL_PROFILES");
+export const modelProfiles = {
+  get profiles(): ModelProfileType {
+    return requireJsonEnv<ModelProfileType>("VITE_MODEL_PROFILES");
+  }
+};

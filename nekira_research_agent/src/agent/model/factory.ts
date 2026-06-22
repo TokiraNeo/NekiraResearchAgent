@@ -11,7 +11,7 @@ class ModelFactory {
   private static clients: Partial<Record<ModelProfileLevel, ChatOpenAI>> = {};
 
   private static CreateClient(level: ModelProfileLevel): ChatOpenAI {
-    const profile = modelProfiles[level];
+    const profile = modelProfiles.profiles[level];
 
     if (!profile) {
       throw new Error(`Model profile ${level} not found.`);
@@ -31,14 +31,6 @@ class ModelFactory {
     });
   }
 
-  static init() {
-    (Object.keys(modelProfiles) as ModelProfileLevel[]).forEach((level) => {
-      if (!this.clients[level]) {
-        this.clients[level] = this.CreateClient(level);
-      }
-    });
-  }
-
   static getClient(level: ModelProfileLevel): ChatOpenAI {
     if (!this.clients[level]) {
       this.clients[level] = this.CreateClient(level);
@@ -51,8 +43,6 @@ class ModelFactory {
     this.clients = {};
   }
 }
-
-ModelFactory.init();
 
 export const modelFactory = {
   getClient: ModelFactory.getClient.bind(ModelFactory),
