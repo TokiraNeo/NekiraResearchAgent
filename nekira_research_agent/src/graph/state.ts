@@ -77,6 +77,7 @@ export const ResearchState = Annotation.Root({
   gaps: overwrite<Gap[]>([]),
   reflectAction: overwrite<ReflectAction>("replan"),
   humanReviewAction: overwrite<HumanReviewAction>("replan"),
+  lastHumanReviewFeedback: overwrite<HumanReviewFeedback | null>(null),
 
   // ---- 输出
   finalReport: overwrite(""),

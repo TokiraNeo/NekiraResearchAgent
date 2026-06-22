@@ -16,7 +16,6 @@ import { ResearchGraphState, ResearchState, HumanReviewRequest, HumanReviewFeedb
 import {
   humanReviewNode,
   nodeIds,
-  nodeIdSet,
   planNode,
   readNode,
   reflectNode,
@@ -76,7 +75,10 @@ const graph = new StateGraph(ResearchState)
     [nodeIds.report]: nodeIds.report
   })
   .addEdge(nodeIds.report, END)
-  .compile({ checkpointer: new MemorySaver() });
+  .compile({
+    checkpointer: new MemorySaver(),
+    interruptBefore: [nodeIds.humanReview]
+  });
 
 export type FlowRunResult =
   {
@@ -96,6 +98,18 @@ export type FlowRunResult =
     threadId: string,
   }
 
+// 辅助函数：将 LangChain 运行中可能带后缀的各种节点 runName（例如 "planNode"、"searchNode" 等）
+// 提炼并归一化为标准的 nodeIds 键名（"plan"、"search" 等），完美激活前端高亮和步骤指示
+function normalizeNodeName(runName: string): string | null {
+  const nameLower = runName.toLowerCase();
+  for (const val of Object.values(nodeIds)) {
+    if (nameLower.includes(val.toLowerCase())) {
+      return val;
+    }
+  }
+  return null;
+}
+
 // 定义流程运行时可选参数
 export type FlowRuntimeConfig = {
   onNodeStart?: (nodeName: string) => void;   // 进入节点时的回调
@@ -114,8 +128,11 @@ export async function invokeFlow(
       {
         handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
           if (!runtimeConfig || !runtimeConfig.onNodeStart) { return; }
-          if (runName && nodeIdSet.has(runName)) {
-            runtimeConfig.onNodeStart(runName);
+          if (runName) {
+            const normalized = normalizeNodeName(runName);
+            if (normalized) {
+              runtimeConfig.onNodeStart(normalized);
+            }
           }
         }
       }
@@ -145,8 +162,11 @@ export async function resumeFlow(
       {
         handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
           if (!runtimeConfig || !runtimeConfig.onNodeStart) { return; }
-          if (runName && nodeIdSet.has(runName)) {
-            runtimeConfig.onNodeStart(runName);
+          if (runName) {
+            const normalized = normalizeNodeName(runName);
+            if (normalized) {
+              runtimeConfig.onNodeStart(normalized);
+            }
           }
         }
       }
@@ -155,8 +175,13 @@ export async function resumeFlow(
   };
 
   try {
+    // 将反馈写入State中
+    await graph.updateState(config, {
+      lastHumanReviewFeedback: feedback
+    });
+
     const stream = await graph.stream(
-      new Command({ resume: feedback }),
+      new Command({ resume: true }),
       config
     );
     return await consumeFlowStream(threadId, stream);

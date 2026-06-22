@@ -197,7 +197,8 @@ export async function runStructuredPrompt<D extends AnyPromptDefinition>(
   const modelLevel = def.modelLevel ?? "standard";
 
   const model = createModel(modelLevel);
-  const structuredModel = model.withStructuredOutput(def.outputSchema);
+
+  const structuredModel = model.withStructuredOutput(def.outputSchema, { method: "functionCalling" });
 
   const response = await structuredModel.invoke(prompt);
 
@@ -210,7 +211,7 @@ async function finalizeToolLoopResult<D extends AnyPromptDefinition>(
   toolLoopResult: ToolLoopResult,
 ): Promise<PromptOutput<D>> {
   const model = createModel(def.modelLevel ?? "standard");
-  const structuredModel = model.withStructuredOutput(def.outputSchema);
+  const structuredModel = model.withStructuredOutput(def.outputSchema, { method: "functionCalling" });
 
   const response = await structuredModel.invoke(
     [

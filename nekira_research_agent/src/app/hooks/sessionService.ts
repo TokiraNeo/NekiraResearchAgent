@@ -80,21 +80,26 @@ export function useSessionService() {
     // 启动会话
     try {
       updateSession(id, { status: "Running" });
+      appendSessionLog(id, `Started research on topic: "${topic}"`);
 
       const result = await invokeFlow(id, topic, config);
 
       if (result.status === "interrupted") {
         updateSession(id, { status: "Interrupted", reveiwRequest: result.request });
+        appendSessionLog(id, `Flow interrupted, awaiting human review...`);
       }
       else if (result.status === "completed") {
         updateSession(id, { status: "Completed", finalReport: result.finalReport });
+        appendSessionLog(id, `Flow completed successfully.`);
       }
       else if (result.status === "aborted") {
         updateSession(id, { status: "Aborted" });
+        appendSessionLog(id, `Flow aborted.`);
       }
     }
     catch (error) {
       updateSession(id, { status: "Failed" });
+      appendSessionLog(id, `Flow execution failed: ${error instanceof Error ? error.message : String(error)}`);
     }
     finally {
       // 执行完毕后释放AbortController
@@ -116,21 +121,25 @@ export function useSessionService() {
 
     try {
       updateSession(id, { status: "Running", reveiwRequest: null });
-
+      appendSessionLog(id, `Resuming flow with human feedback.`);
       const result = await resumeFlow(id, feedback, config);
 
       if (result.status === "interrupted") {
         updateSession(id, { status: "Interrupted", reveiwRequest: result.request });
+        appendSessionLog(id, `Flow interrupted again, awaiting further human review...`);
       }
       else if (result.status === "completed") {
         updateSession(id, { status: "Completed", finalReport: result.finalReport });
+        appendSessionLog(id, `Flow completed successfully after resuming.`);
       }
       else if (result.status === "aborted") {
         updateSession(id, { status: "Aborted" });
+        appendSessionLog(id, `Flow aborted after resuming.`);
       }
     }
     catch (error) {
       updateSession(id, { status: "Failed" });
+      appendSessionLog(id, `Flow execution failed after resuming: ${error instanceof Error ? error.message : String(error)}`);
     }
     finally {
       // 执行完毕后释放AbortController
