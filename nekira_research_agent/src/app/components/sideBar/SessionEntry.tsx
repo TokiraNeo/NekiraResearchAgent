@@ -135,7 +135,7 @@ export function SessionEntry({ session, isActive, onSelect, onRename, onDelete }
           <button
             className={styles.actionBtn}
             onClick={() => setIsEditing(true)}
-            title="重命名话题"
+            title="重命名会话"
           >
             ✎
           </button>

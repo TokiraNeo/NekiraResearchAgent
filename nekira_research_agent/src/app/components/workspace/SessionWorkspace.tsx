@@ -25,8 +25,49 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
   const [extraRounds, setExtraRounds] = useState<number>(1);
   const [isResuming, setIsResuming] = useState(false);
 
+  // 底部控制台展开/折叠状态（大部分情况下默认折叠，提供极致清爽的用户体验）
+  const [isConsoleExpanded, setIsConsoleExpanded] = useState(false);
+  const [consoleHeight, setConsoleHeight] = useState(180); // 默认展开高度 180px
+  const isDraggingRef = useRef(false);
+
   // 终端日志自动滚底的 Ref
   const logEndRef = useRef<HTMLDivElement>(null);
+
+  // 监听图状态：当状态变成 "Running" 时，可以自动打开控制台；
+
+  // 处理鼠标拖拽调整控制台高度
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isDraggingRef.current = true;
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    const workspaceElement = document.querySelector(`.${styles.workspace}`);
+    if (workspaceElement) {
+      const rect = workspaceElement.getBoundingClientRect();
+      const newHeight = rect.bottom - e.clientY;
+      // 限制高度在 80px 到 500px 之间
+      if (newHeight >= 80 && newHeight <= 500) {
+        setConsoleHeight(newHeight);
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    isDraggingRef.current = false;
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
 
   // 每次触发 Interrupted 审核时，同步最新的 gaps
   useEffect(() => {
@@ -249,13 +290,22 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
       </div>
 
       {/* 底部折叠/平铺运行终端日志 */}
-      <footer className={styles.logsFooter}>
-        <div className={styles.logsHeader}>
+      <footer
+        className={`${styles.logsFooter} ${isConsoleExpanded ? styles.expanded : styles.collapsed}`}
+        style={{ height: isConsoleExpanded ? `${consoleHeight}px` : "40px" }}
+      >
+        {isConsoleExpanded && (
+          <div className={styles.resizeHandle} onMouseDown={handleMouseDown} title="双击或拖拽可以调整高度" />
+        )}
+        <div className={styles.logsHeader} onClick={() => setIsConsoleExpanded(!isConsoleExpanded)}>
           <div className={styles.logsIndicator}>
             <span className={styles.greenTerminalDot} />
             <span>实时运行控制台日志 (Live Execution Logs)</span>
           </div>
-          <span className={styles.logCount}>{currentSession.logs.length} Lines</span>
+          <div className={styles.logsHeaderRight}>
+            <span className={styles.logCount}>{currentSession.logs.length} Lines</span>
+            <span className={styles.toggleArrow}>{isConsoleExpanded ? "▼ 折叠" : "▲ 展开"}</span>
+          </div>
         </div>
         <div className={styles.logsConsole}>
           {currentSession.logs.length === 0 ? (

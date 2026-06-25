@@ -14,10 +14,10 @@ function resolveReflectAction(
 ): ReflectAction {
   const nextRound = round + 1;
 
-  // 如果请求的行动是 "replan"，但执行它会导致超过最大轮数限制，则改为 "report"。
-  // humanReview会自动追加最大轮数，因此这里不需要额外考虑humanReview的情况。
+  // 如果智能体想自主 Replan 深入检索，但发现轮数预算已到上限：
+  // 应当主动升级为 humanReview，展现这些 Gap 并询问人类是否授权追加轮数！
   if (requestedAction === "replan" && nextRound > maxRounds) {
-    return "report";
+    return "humanReview";
   }
 
   return requestedAction;

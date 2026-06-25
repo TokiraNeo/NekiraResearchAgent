@@ -16,6 +16,7 @@ import { ResearchGraphState, ResearchState, HumanReviewRequest, HumanReviewFeedb
 import {
   humanReviewNode,
   nodeIds,
+  nodeIdSet,
   planNode,
   readNode,
   reflectNode,
@@ -98,16 +99,25 @@ export type FlowRunResult =
     threadId: string,
   }
 
-// 辅助函数：将 LangChain 运行中可能带后缀的各种节点 runName（例如 "planNode"、"searchNode" 等）
-// 提炼并归一化为标准的 nodeIds 键名（"plan"、"search" 等），完美激活前端高亮和步骤指示
-function normalizeNodeName(runName: string): string | null {
+function normalizeNodeName(runName: string | null): string | null {
+  if (!runName) { return null; }
+
   const nameLower = runName.toLowerCase();
-  for (const val of Object.values(nodeIds)) {
-    if (nameLower.includes(val.toLowerCase())) {
-      return val;
+  for (const id of nodeIdSet) {
+    if (id.toLowerCase() === nameLower) {
+      return id;
     }
   }
   return null;
+}
+
+// 获取当前运行节点
+function extractLangGraphNode(metadata: Record<string, any>): string | null {
+  if (!metadata || typeof metadata !== "object") { return null; }
+
+  const node = metadata["langgraph_node"];
+
+  return typeof node === "string" ? node : null;
 }
 
 // 定义流程运行时可选参数
@@ -126,10 +136,10 @@ export async function invokeFlow(
     configurable: { thread_id: threadId },
     callbacks: [
       {
-        handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
+        handleChainStart(_chain, _inputs, _runId, _runType, _tags, metadata, _runName, _parentRunId, _extra) {
           if (!runtimeConfig || !runtimeConfig.onNodeStart) { return; }
-          if (runName) {
-            const normalized = normalizeNodeName(runName);
+          if (metadata) {
+            const normalized = normalizeNodeName(extractLangGraphNode(metadata));
             if (normalized) {
               runtimeConfig.onNodeStart(normalized);
             }
@@ -160,10 +170,10 @@ export async function resumeFlow(
     configurable: { thread_id: threadId },
     callbacks: [
       {
-        handleChainStart(_chain, _inputs, _runId, _runType, _tags, _metadata, runName, _parentRunId, _extra) {
+        handleChainStart(_chain, _inputs, _runId, _runType, _tags, metadata, _runName, _parentRunId, _extra) {
           if (!runtimeConfig || !runtimeConfig.onNodeStart) { return; }
-          if (runName) {
-            const normalized = normalizeNodeName(runName);
+          if (metadata) {
+            const normalized = normalizeNodeName(extractLangGraphNode(metadata));
             if (normalized) {
               runtimeConfig.onNodeStart(normalized);
             }
