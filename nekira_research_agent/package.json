@@ -17,6 +17,7 @@
     "@langchain/openai": "^1.4.7",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
+    "@tavily/core": "^0.7.6",
     "handlebars": "^4.7.9",
     "langchain": "^1.4.2",
     "react": "^19.1.0",

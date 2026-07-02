@@ -8,6 +8,7 @@
       "@/graph/*": ["./src/graph/*"],
       "@/agent/*": ["./src/agent/*"],
       "@/app/*": ["./src/app/*"],
+      "@/utility/*": ["./src/utility/*"]
     },
 
     "target": "ES2020",
