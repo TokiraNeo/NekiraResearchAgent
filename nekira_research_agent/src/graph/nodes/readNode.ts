@@ -8,13 +8,16 @@ import { ResearchGraphState, ResearchGraphUpdate } from "@/graph/state";
 import { executePrompt } from "@/prompts";
 
 export async function readNode(state: ResearchGraphState): Promise<ResearchGraphUpdate> {
-  const response = await executePrompt(
-    "read",
-    {
-      topic: state.topic,
-      candidateUrls: state.candidateUrls
-    }
+  const responses = await Promise.all(
+    state.candidateUrls.map((url) =>
+      executePrompt("read", {
+        topic: state.topic,
+        url: url,
+      })
+    )
   );
 
-  return { sourceNotes: response.sourceNotes };
+  const sourceNodes = responses.map((response) => response.sourceNode);
+
+  return { sourceNotes: sourceNodes };
 }

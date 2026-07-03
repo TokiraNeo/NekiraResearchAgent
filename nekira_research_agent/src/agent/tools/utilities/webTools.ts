@@ -30,11 +30,18 @@ export const tavilySearch = tool(
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch search results from Tavily API.");
+      const detail = await response.text().catch(() => "");
+      throw new Error(`Tavily search failed: ${response.status} ${detail}`);
     }
 
     const data = await response.json();
-    return data.results;
+    return data.results.map((result: any) => {
+      return {
+        title: result.title,
+        url: result.url,
+        content: result.content,
+      };
+    });
   },
   {
     name: "tavilySearch",
@@ -66,13 +73,14 @@ export const tavilyExtract = tool(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        format: "markdown",
         urls: [url],
-
       }),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to extract content from Tavily API.");
+      const detail = await response.text().catch(() => "");
+      throw new Error(`Tavily extract failed: ${response.status} ${detail}`);
     }
 
     const data = await response.json();
