@@ -8,8 +8,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { ResearchSession } from "@/app/schemas/session";
 import { useSessionService } from "@/app/hooks/sessionService";
 import { Gap } from "@/graph/state";
-import { GapList } from "../gap/GapList";
-import { MarkdownViewer } from "../markdown/MarkdownViewer";
+import { GapList } from "@/app/components/Gap/GapList";
+import { MarkdownViewer } from "@/app/components/markdown/MarkdownViewer";
 import styles from "./SessionWorkspace.module.css";
 
 interface SessionWorkspaceProps {
@@ -17,7 +17,10 @@ interface SessionWorkspaceProps {
   service: ReturnType<typeof useSessionService>;
 }
 
-export function SessionWorkspace({ currentSession, service }: SessionWorkspaceProps) {
+export function SessionWorkspace({
+  currentSession,
+  service,
+}: SessionWorkspaceProps) {
   const { resumeSession, deleteSession } = service;
 
   // HITL人机审核的局部状态暂存
@@ -92,7 +95,9 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
           <h1>Nekira Research Agent</h1>
           <p>请在左侧侧边栏中选择一个已有课题，或发起一个新的深度智能调研。</p>
           <div className={styles.pipelinePreview}>
-            <span>Plan 计划</span> ➔ <span>Search 检索</span> ➔ <span>Read 阅读</span> ➔ <span>Reflect 反思</span> ➔ <span>Report 产出</span>
+            <span>Plan 计划</span> ➔ <span>Search 检索</span> ➔{" "}
+            <span>Read 阅读</span> ➔ <span>Reflect 反思</span> ➔{" "}
+            <span>Report 产出</span>
           </div>
         </div>
       </div>
@@ -109,11 +114,9 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
         editedGaps: localGaps,
         extraRounds: action === "replan" ? extraRounds : undefined,
       });
-    }
-    catch (err) {
+    } catch (err) {
       console.error("[Workspace] 恢复会话执行失败:", err);
-    }
-    finally {
+    } finally {
       setIsResuming(false);
     }
   };
@@ -124,18 +127,24 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
     return (
       <div className={styles.stepTracker}>
         {steps.map((step, idx) => {
-          const isNodeActive = currentSession.activeNode?.toLowerCase().includes(step);
+          const isNodeActive = currentSession.activeNode
+            ?.toLowerCase()
+            .includes(step);
           const isPast = currentSession.status === "Completed";
 
           return (
             <React.Fragment key={step}>
-              <div className={`${styles.stepNode} ${isNodeActive ? styles.stepActive : ""} ${isPast ? styles.stepPast : ""}`}>
+              <div
+                className={`${styles.stepNode} ${isNodeActive ? styles.stepActive : ""} ${isPast ? styles.stepPast : ""}`}
+              >
                 <div className={styles.stepCircle}>{idx + 1}</div>
                 <span className={styles.stepLabel}>{step.toUpperCase()}</span>
                 {isNodeActive && <div className={styles.activeDot} />}
               </div>
               {idx < steps.length - 1 && (
-                <div className={`${styles.stepConnector} ${isPast ? styles.connectorPast : ""}`} />
+                <div
+                  className={`${styles.stepConnector} ${isPast ? styles.connectorPast : ""}`}
+                />
               )}
             </React.Fragment>
           );
@@ -151,11 +160,15 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
         <div className={styles.titleArea}>
           <div className={styles.titleRow}>
             <h1>{currentSession.name}</h1>
-            <span className={`${styles.statusLabel} ${styles[`status_${currentSession.status}`]}`}>
+            <span
+              className={`${styles.statusLabel} ${styles[`status_${currentSession.status}`]}`}
+            >
               {currentSession.status.toUpperCase()}
             </span>
           </div>
-          <p className={styles.topicSub}>原始调研课题: {currentSession.topic}</p>
+          <p className={styles.topicSub}>
+            原始调研课题: {currentSession.topic}
+          </p>
         </div>
 
         {/* 只有在运行中才展示“中止运行”熔断控制按钮 */}
@@ -171,9 +184,7 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
       </header>
 
       {/* 顶部步骤条 */}
-      <section className={styles.trackerWrapper}>
-        {renderStepTracker()}
-      </section>
+      <section className={styles.trackerWrapper}>{renderStepTracker()}</section>
 
       {/* 主视图区域：自适应渲染 */}
       <div className={styles.mainContent}>
@@ -182,7 +193,12 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
             <div className={styles.runningLoader}>
               <div className={styles.loaderPulse} />
               <h3>智能体正在执行深度检索与分析...</h3>
-              <p>当前活跃执行节点: <span className={styles.nodeHighlight}>{currentSession.activeNode || "待命"}</span></p>
+              <p>
+                当前活跃执行节点:{" "}
+                <span className={styles.nodeHighlight}>
+                  {currentSession.activeNode || "待命"}
+                </span>
+              </p>
             </div>
           </div>
         )}
@@ -194,15 +210,20 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
               <div className={styles.alertText}>
                 <h3>LangGraph 进入反思节点：等待人工评审</h3>
                 <p>
-                  智能体目前已完成了第 <strong>{currentSession.reveiwRequest?.round || 1}</strong> 轮调研。
-                  在反思阶段，AI 提取出了以下 <strong>知识缺口（Gaps）</strong>。您可以通过双击修改，并指导下一步去向。
+                  智能体目前已完成了第{" "}
+                  <strong>{currentSession.reveiwRequest?.round || 1}</strong>{" "}
+                  轮调研。 在反思阶段，AI 提取出了以下{" "}
+                  <strong>知识缺口（Gaps）</strong>
+                  。您可以通过双击修改，并指导下一步去向。
                 </p>
               </div>
             </div>
 
             {/* Gaps 缺口列表交互 */}
             <div className={styles.gapsSection}>
-              <h4 className={styles.sectionTitle}>审阅并修改知识缺口 (Review Research Gaps)</h4>
+              <h4 className={styles.sectionTitle}>
+                审阅并修改知识缺口 (Review Research Gaps)
+              </h4>
               <GapList gaps={localGaps} onChange={setLocalGaps} />
             </div>
 
@@ -216,9 +237,13 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
                   max={5}
                   value={extraRounds}
                   className={styles.roundsInput}
-                  onChange={(e) => setExtraRounds(Math.max(1, parseInt(e.target.value) || 1))}
+                  onChange={(e) =>
+                    setExtraRounds(Math.max(1, parseInt(e.target.value) || 1))
+                  }
                 />
-                <span className={styles.roundsHint}>当前轮数预算不足时，批准 Replan 将自动追加此额外轮次上限。</span>
+                <span className={styles.roundsHint}>
+                  当前轮数预算不足时，批准 Replan 将自动追加此额外轮次上限。
+                </span>
               </div>
 
               <div className={styles.actionButtons}>
@@ -227,14 +252,18 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
                   disabled={isResuming}
                   onClick={() => handleResume("replan")}
                 >
-                  {isResuming ? "正在推进..." : "✓ 批准并继续深入调研 (Approve & Replan)"}
+                  {isResuming
+                    ? "正在推进..."
+                    : "✓ 批准并继续深入调研 (Approve & Replan)"}
                 </button>
                 <button
                   className={`${styles.formBtn} ${styles.btnReport}`}
                   disabled={isResuming}
                   onClick={() => handleResume("report")}
                 >
-                  {isResuming ? "正在生成..." : "✉ 终止并直接产出报告 (Generate Report)"}
+                  {isResuming
+                    ? "正在生成..."
+                    : "✉ 终止并直接产出报告 (Generate Report)"}
                 </button>
               </div>
             </div>
@@ -262,7 +291,9 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
           </article>
         )}
 
-        {(currentSession.status === "Idle" || currentSession.status === "Failed" || currentSession.status === "Aborted") && (
+        {(currentSession.status === "Idle" ||
+          currentSession.status === "Failed" ||
+          currentSession.status === "Aborted") && (
           <div className={styles.fallbackPanel}>
             {currentSession.status === "Idle" && (
               <div className={styles.idleSplash}>
@@ -275,14 +306,20 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
               <div className={`${styles.idleSplash} ${styles.failedSplash}`}>
                 <div className={styles.failedIcon}>⚠</div>
                 <h3>很抱歉，智能体执行流异常中断</h3>
-                <p>底层图节点在调用 LLM 或运行代码时发生未知错误。详情请查看下方运行日志。</p>
+                <p>
+                  底层图节点在调用 LLM
+                  或运行代码时发生未知错误。详情请查看下方运行日志。
+                </p>
               </div>
             )}
             {currentSession.status === "Aborted" && (
               <div className={`${styles.idleSplash} ${styles.abortedSplash}`}>
                 <div className={styles.abortedIcon}>✕</div>
                 <h3>调研流程已被用户中止</h3>
-                <p>该流程已安全挂起并掐断了底层网络和 Token 消耗。您可以随时重新开始。</p>
+                <p>
+                  该流程已安全挂起并掐断了底层网络和 Token
+                  消耗。您可以随时重新开始。
+                </p>
               </div>
             )}
           </div>
@@ -295,25 +332,40 @@ export function SessionWorkspace({ currentSession, service }: SessionWorkspacePr
         style={{ height: isConsoleExpanded ? `${consoleHeight}px` : "40px" }}
       >
         {isConsoleExpanded && (
-          <div className={styles.resizeHandle} onMouseDown={handleMouseDown} title="双击或拖拽可以调整高度" />
+          <div
+            className={styles.resizeHandle}
+            onMouseDown={handleMouseDown}
+            title="双击或拖拽可以调整高度"
+          />
         )}
-        <div className={styles.logsHeader} onClick={() => setIsConsoleExpanded(!isConsoleExpanded)}>
+        <div
+          className={styles.logsHeader}
+          onClick={() => setIsConsoleExpanded(!isConsoleExpanded)}
+        >
           <div className={styles.logsIndicator}>
             <span className={styles.greenTerminalDot} />
             <span>实时运行控制台日志 (Live Execution Logs)</span>
           </div>
           <div className={styles.logsHeaderRight}>
-            <span className={styles.logCount}>{currentSession.logs.length} Lines</span>
-            <span className={styles.toggleArrow}>{isConsoleExpanded ? "▼ 折叠" : "▲ 展开"}</span>
+            <span className={styles.logCount}>
+              {currentSession.logs.length} Lines
+            </span>
+            <span className={styles.toggleArrow}>
+              {isConsoleExpanded ? "▼ 折叠" : "▲ 展开"}
+            </span>
           </div>
         </div>
         <div className={styles.logsConsole}>
           {currentSession.logs.length === 0 ? (
-            <div className={styles.noLogs}>控制台暂无输出。图启动运行后，流式日志将在这里实时打印。</div>
+            <div className={styles.noLogs}>
+              控制台暂无输出。图启动运行后，流式日志将在这里实时打印。
+            </div>
           ) : (
             currentSession.logs.map((log, i) => (
               <div key={i} className={styles.logLine}>
-                <span className={styles.lineNumber}>{(i + 1).toString().padStart(3, "0")}</span>
+                <span className={styles.lineNumber}>
+                  {(i + 1).toString().padStart(3, "0")}
+                </span>
                 <span className={styles.logText}>{log}</span>
               </div>
             ))

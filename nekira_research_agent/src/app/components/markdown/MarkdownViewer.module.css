@@ -9,8 +9,15 @@
   font-size: 13.5px;
   line-height: 1.75;
   color: var(--color-text-primary, #2C2C2A);
-  text-align: justify;
+  text-align: left;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.markdownBody p,
+.markdownBody li {
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 /* 标题设计 */
@@ -98,6 +105,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  overflow-wrap: anywhere;
 }
 
 .mdLink:hover {

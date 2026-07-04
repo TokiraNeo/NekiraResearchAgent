@@ -13,7 +13,7 @@ const readInputSchema = z.object({
 });
 
 const readOutputSchema = z.object({
-  sourceNode: z.object({
+  sourceNote: z.object({
     url: z.url().min(1),
     title: z.string().min(1),
     summary: z.string().min(1),
@@ -50,12 +50,16 @@ export const readPromptDef: PromptDefinition<
     3. 只输出与主题相关、能被正文直接支撑的信息。
 
     要求：
-    - sourceNode.url 必须原样返回 {{url}}
-    - sourceNode.title 优先使用正文中的页面标题、文章标题或主标题
+    - sourceNote.url 必须原样返回 {{url}}
+    - sourceNote.title 优先使用正文中的页面标题、文章标题或主标题
     - 如果正文中没有明确标题，再使用最接近正文主旨的标题性表述，但不得凭空虚构
-    - sourceNode.summary 必须是对正文内容的精炼概括，建议 2-4 句，明确说明它与主题的关系
-    - sourceNode.keyPoints 提供 1-5 个关键词，每条都必须能在正文中找到直接依据
+    - sourceNote.summary 必须是对正文内容的精炼概括，建议 2-4 句，明确说明它与主题的关系
+    - sourceNote.keyPoints 提供 1-5 个关键词，每条都必须能在正文中找到直接依据
     - 如果正文信息很少，就返回更保守的 summary 和更少的 keyPoints，不要为了凑字段而编造
+    - 如果正文几乎无法提取到有效信息，也不要返回空字段；请使用可审计的保底值
+    - title 的保底值可以是 URL 本身、域名或页面路径的概括性标题
+    - summary 的保底值可以直接说明“正文抽取信息不足，无法可靠生成摘要”
+    - keyPoints 至少保留 1 条保底说明，例如“正文抽取信息不足，无法提炼更多要点”
     - 不要输出正文中没有依据的结论、数字、时间、作者、机构或立场
     - 不要返回 URL 之外的其他来源信息
   `.trim(),

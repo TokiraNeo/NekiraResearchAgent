@@ -7,17 +7,31 @@
 import { ResearchGraphState, ResearchGraphUpdate } from "@/graph/state";
 import { executePrompt } from "@/prompts";
 
+function buildFallbackSourceNote(url: string) {
+  return {
+    url,
+    title: url,
+    summary: "正文抽取信息不足，无法可靠生成摘要。",
+    keyPoints: ["正文抽取信息不足，无法提炼更多要点。"],
+  };
+}
+
 export async function readNode(state: ResearchGraphState): Promise<ResearchGraphUpdate> {
   const responses = await Promise.all(
-    state.candidateUrls.map((url) =>
-      executePrompt("read", {
-        topic: state.topic,
-        url: url,
-      })
-    )
+    state.candidateUrls.map(async (url) => {
+      try {
+        return await executePrompt("read", {
+          topic: state.topic,
+          url,
+        });
+      } catch (error) {
+        console.warn(`[ReadNode] Failed to read url "${url}", using fallback sourceNote.`, error);
+        return { sourceNote: buildFallbackSourceNote(url) };
+      }
+    })
   );
 
-  const sourceNodes = responses.map((response) => response.sourceNode);
+  const sourceNotes = responses.map((response) => response.sourceNote);
 
-  return { sourceNotes: sourceNodes };
+  return { sourceNotes };
 }

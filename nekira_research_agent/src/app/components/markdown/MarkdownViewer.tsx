@@ -16,13 +16,12 @@ interface MarkdownViewerProps {
 }
 
 export function MarkdownViewer({ content, className = "" }: MarkdownViewerProps) {
-  // 单个代码块复制的状态提示
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedBlockId, setCopiedBlockId] = useState<string | null>(null);
 
-  const handleCopy = (text: string, id: string) => {
+  const handleCopyBlock = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 1500);
+    setCopiedBlockId(id);
+    setTimeout(() => setCopiedBlockId(null), 1500);
   };
 
   // 自定义 HTML 标签组件重定义
@@ -77,58 +76,44 @@ export function MarkdownViewer({ content, className = "" }: MarkdownViewerProps)
     td: ({ children }: any) => <td className={styles.mdTd}>{children}</td>,
 
     // 6. 代码块与内联代码
-    code: ({ node, inline, className, children, ...props }: any) => {
-      const match = /language-(\w+)/.exec(className || "");
-      const language = match ? match[1] : "";
-      const codeString = String(children).replace(/\n$/, "");
-
-      if (!inline && language) {
-        // 多行带语言的高亮/普通代码块
-        const blockId = React.useId();
-        return (
-          <div className={styles.codeBlockWrapper}>
-            <div className={styles.codeHeader}>
-              <span className={styles.codeLang}>{language.toUpperCase()}</span>
-              <button
-                className={styles.copyCodeBtn}
-                onClick={() => handleCopy(codeString, blockId)}
-              >
-                {copiedId === blockId ? "✓ Copied" : "📋 Copy"}
-              </button>
-            </div>
-            <pre className={styles.mdPre} {...props}>
-              <code className={styles.blockCode}>{codeString}</code>
-            </pre>
-          </div>
-        );
-      }
-
-      if (!inline) {
-        // 普通多行无语言代码块
-        const blockId = React.useId();
-        return (
-          <div className={styles.codeBlockWrapper}>
-            <div className={styles.codeHeader}>
-              <span className={styles.codeLang}>CODE</span>
-              <button
-                className={styles.copyCodeBtn}
-                onClick={() => handleCopy(codeString, blockId)}
-              >
-                {copiedId === blockId ? "✓ Copied" : "📋 Copy"}
-              </button>
-            </div>
-            <pre className={styles.mdPre} {...props}>
-              <code className={styles.blockCode}>{codeString}</code>
-            </pre>
-          </div>
-        );
-      }
-
+    code: ({ inline, children, ...props }: any) => {
       // 单行内联代码
+      if (inline) {
+        return (
+          <code className={styles.inlineCode} {...props}>
+            {children}
+          </code>
+        );
+      }
+
+      // 多行代码块只保留 <code> 本体，由 pre 组件负责外层结构，避免非法嵌套
       return (
-        <code className={styles.inlineCode} {...props}>
+        <code className={styles.blockCode} {...props}>
           {children}
         </code>
+      );
+    },
+    pre: ({ children }: any) => {
+      const child = Array.isArray(children) ? children[0] : children;
+      const codeString = String(child?.props?.children ?? "").replace(/\n$/, "");
+      const language = String(child?.props?.className ?? "").replace("language-", "");
+      const blockId = React.useId();
+
+      return (
+        <div className={styles.codeBlockWrapper}>
+          <div className={styles.codeHeader}>
+            <span className={styles.codeLang}>{language ? language.toUpperCase() : "CODE"}</span>
+            <button
+              className={styles.copyCodeBtn}
+              onClick={() => handleCopyBlock(codeString, blockId)}
+            >
+              {copiedBlockId === blockId ? "✓ Copied" : "📋 Copy"}
+            </button>
+          </div>
+          <pre className={styles.mdPre}>
+            {children}
+          </pre>
+        </div>
       );
     },
   };
