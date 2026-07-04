@@ -5,19 +5,22 @@
  */
 
 import { add, multiply } from "@/agent/tools/utilities/exampleTool";
+import { tavilySearch, tavilyExtract } from "@/agent/tools/utilities/webTools";
 
 export const toolsRegistry = {
   [add.name]: add,
   [multiply.name]: multiply,
+  [tavilySearch.name]: tavilySearch,
+  [tavilyExtract.name]: tavilyExtract,
 } as const;
 
 type ToolName = keyof typeof toolsRegistry;
 
 const toolsSet = {
-  "none": [] as ToolName[],
-  "default": ["add", "multiply"] as ToolName[],
-  "search": [] as ToolName[], // 搜索工具集合（示例中暂时为空）
-  "read": [] as ToolName[],   // 阅读工具集合（示例中暂时为空）
+  none: [] as ToolName[],
+  default: ["add", "multiply"] as ToolName[],
+  search: ["tavilySearch"] as ToolName[], // 搜索工具集合
+  read: ["tavilyExtract"] as ToolName[], // 阅读工具集合
 };
 
 export type ToolSetId = keyof typeof toolsSet;
@@ -38,15 +41,13 @@ export function resolveTools(id: ToolSetId): InvocableTool[] {
     throw new Error(`ToolSetId "${id}" is not defined in toolsSet.`);
   }
 
-  const tools = toolNames.map((
-    (name) => {
-      const tool = toolsRegistry[name];
-      if (!tool) {
-        throw new Error(`Tool "${name}" is not defined in toolsRegistry.`);
-      }
-      return tool;
+  const tools = toolNames.map((name) => {
+    const tool = toolsRegistry[name];
+    if (!tool) {
+      throw new Error(`Tool "${name}" is not defined in toolsRegistry.`);
     }
-  ));
+    return tool;
+  });
 
   return tools;
 }

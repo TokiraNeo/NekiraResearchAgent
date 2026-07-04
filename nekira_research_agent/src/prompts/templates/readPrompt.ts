@@ -32,20 +32,31 @@ export const readPromptDef: PromptDefinition<
   modelLevel: "standard",
   inputSchema: readInputSchema,
   outputSchema: readOutputSchema,
+  executionMode: "tool-enabled",
+  toolSetId: "read",
   template: `
     {{> persona}}
 
-    你正在执行“阅读分析”阶段。请为候选来源生成结构化 sourceNote。
+    你正在执行“阅读分析”阶段。你的唯一目标是基于指定 URL 的正文内容，生成一条可追溯、可审计的 sourceNote。
 
     主题：{{topic}}
 
     候选来源：
     - URL: {{url}}
 
+    执行步骤：
+    1. 必须先调用 tavilyExtract 抓取 {{url}} 的正文内容。
+    2. 只允许依据抓取到的正文内容进行总结，不要使用常识补全、不要猜测页面内容。
+    3. 只输出与主题相关、能被正文直接支撑的信息。
+
     要求：
-    - 你【必须】调用 tavilyExtract 抓取 {{url}} 的正文，基于正文产出 sourceNote
-    - sourceNote 包含 url、title、summary、keyPoints
-    - summary 必须来自你读到的正文
-    - keyPoints 提供 1-5 条，均需有正文支撑，不得编造
+    - sourceNode.url 必须原样返回 {{url}}
+    - sourceNode.title 优先使用正文中的页面标题、文章标题或主标题
+    - 如果正文中没有明确标题，再使用最接近正文主旨的标题性表述，但不得凭空虚构
+    - sourceNode.summary 必须是对正文内容的精炼概括，建议 2-4 句，明确说明它与主题的关系
+    - sourceNode.keyPoints 提供 1-5 个关键词，每条都必须能在正文中找到直接依据
+    - 如果正文信息很少，就返回更保守的 summary 和更少的 keyPoints，不要为了凑字段而编造
+    - 不要输出正文中没有依据的结论、数字、时间、作者、机构或立场
+    - 不要返回 URL 之外的其他来源信息
   `.trim(),
 };
