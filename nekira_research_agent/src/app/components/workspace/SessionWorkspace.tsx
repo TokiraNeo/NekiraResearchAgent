@@ -8,7 +8,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ResearchSession } from "@/app/schemas/session";
 import { useSessionService } from "@/app/hooks/sessionService";
 import { Gap } from "@/graph/state";
-import { GapList } from "@/app/components/Gap/GapList";
+import { GapList } from "@/app/components/gap/GapList";
 import { MarkdownViewer } from "@/app/components/markdown/MarkdownViewer";
 import styles from "./SessionWorkspace.module.css";
 
@@ -294,36 +294,36 @@ export function SessionWorkspace({
         {(currentSession.status === "Idle" ||
           currentSession.status === "Failed" ||
           currentSession.status === "Aborted") && (
-          <div className={styles.fallbackPanel}>
-            {currentSession.status === "Idle" && (
-              <div className={styles.idleSplash}>
-                <div className={styles.idleIcon}>☄</div>
-                <h3>会话处于初始就绪状态</h3>
-                <p>点击左侧列表的“输入并回车”开始启动 LangGraph 执行流。</p>
-              </div>
-            )}
-            {currentSession.status === "Failed" && (
-              <div className={`${styles.idleSplash} ${styles.failedSplash}`}>
-                <div className={styles.failedIcon}>⚠</div>
-                <h3>很抱歉，智能体执行流异常中断</h3>
-                <p>
-                  底层图节点在调用 LLM
-                  或运行代码时发生未知错误。详情请查看下方运行日志。
-                </p>
-              </div>
-            )}
-            {currentSession.status === "Aborted" && (
-              <div className={`${styles.idleSplash} ${styles.abortedSplash}`}>
-                <div className={styles.abortedIcon}>✕</div>
-                <h3>调研流程已被用户中止</h3>
-                <p>
-                  该流程已安全挂起并掐断了底层网络和 Token
-                  消耗。您可以随时重新开始。
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+            <div className={styles.fallbackPanel}>
+              {currentSession.status === "Idle" && (
+                <div className={styles.idleSplash}>
+                  <div className={styles.idleIcon}>☄</div>
+                  <h3>会话处于初始就绪状态</h3>
+                  <p>点击左侧列表的“输入并回车”开始启动 LangGraph 执行流。</p>
+                </div>
+              )}
+              {currentSession.status === "Failed" && (
+                <div className={`${styles.idleSplash} ${styles.failedSplash}`}>
+                  <div className={styles.failedIcon}>⚠</div>
+                  <h3>很抱歉，智能体执行流异常中断</h3>
+                  <p>
+                    底层图节点在调用 LLM
+                    或运行代码时发生未知错误。详情请查看下方运行日志。
+                  </p>
+                </div>
+              )}
+              {currentSession.status === "Aborted" && (
+                <div className={`${styles.idleSplash} ${styles.abortedSplash}`}>
+                  <div className={styles.abortedIcon}>✕</div>
+                  <h3>调研流程已被用户中止</h3>
+                  <p>
+                    该流程已安全挂起并掐断了底层网络和 Token
+                    消耗。您可以随时重新开始。
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
       </div>
 
       {/* 底部折叠/平铺运行终端日志 */}
